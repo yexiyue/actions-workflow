@@ -1,0 +1,43 @@
+[package]
+name = "actions-workflow"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.83"
+async-graphql = { version = "7.0.5", features = ["chrono"] }
+async-graphql-axum = "7.0.5"
+axum = "0.7.4"
+chrono = { version = "0.4.38", features = ["serde"] }
+jsonwebtoken = "9.3.0"
+serde = { version = "1.0.201", features = ["derive"] }
+serde_json = "1.0.117"
+shuttle-axum = "0.45.0"
+shuttle-runtime = "0.45.0"
+thiserror = "1.0.60"
+tokio = "1.28.2"
+tower-http = { version = "0.5.2", features = [
+    "cors",
+    "request-id",
+    "compression-gzip",
+    "timeout",
+] }
+migration = { path = "./migration" }
+shuttle-shared-db = { version = "0.45.0", features = ["postgres", "sqlx"] }
+tracing = "0.1.40"
+sea-orm = { version = "0.12.15", features = [
+    "sqlx-postgres",
+    "runtime-tokio-native-tls",
+] }
+sqlx = "0.7.4"
+axum-extra = { version = "0.9.3", features = [
+    "cookie-private",
+    "typed-header",
+    "cookie",
+] }
+oauth2 = "4.4.2"
+reqwest = { version = "0.12.4", features = ["json"] }
+redis = { version = "0.25.3", features = ["tls"] }
+
+[workspace]
+members = ["migration"]

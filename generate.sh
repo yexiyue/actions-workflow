@@ -1,0 +1,1 @@
+sea generate entity -o src/entity --model-extra-derives async_graphql::SimpleObject --with-serde both --model-extra-attributes 'graphql(concrete(name = "Category" params()))'
