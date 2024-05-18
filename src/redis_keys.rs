@@ -3,12 +3,18 @@ use std::fmt::Display;
 #[derive(Debug)]
 pub enum RedisKeys {
     UserToken,
+    TemplateDownloads,
+    TemplateFavorites,
+    TemplateComments,
 }
 
 impl ToString for RedisKeys {
     fn to_string(&self) -> String {
         match self {
             RedisKeys::UserToken => "user_token".to_string(),
+            RedisKeys::TemplateDownloads => "template_downloads".to_string(),
+            RedisKeys::TemplateFavorites => "template_favorites".to_string(),
+            RedisKeys::TemplateComments => "template_comments".to_string(),
         }
     }
 }

@@ -2,6 +2,7 @@ use crate::entity::user::Model;
 use crate::{graphql::AuthGuard, jwt::Claims, service::user::UserService};
 use async_graphql::{Context, Object, Result};
 use sea_orm::DbConn;
+
 #[derive(Debug, Default)]
 pub struct UserQuery;
 

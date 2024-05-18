@@ -21,11 +21,15 @@ use tower_http::{
 };
 mod redis_keys;
 
-pub fn build_root_router(coon: DbConn, secret_store: SecretStore) -> Result<Router> {
+pub async fn build_root_router(coon: DbConn, secret_store: SecretStore) -> Result<Router> {
     let client_id = secret_store.get("GITHUB_OAUTH_CLIENT_ID").unwrap();
     let client_secret = secret_store.get("GITHUB_OAUTH_CLIENT_SECRET").unwrap();
     let auth = OAuth::new(&client_id, &client_secret, "http://localhost:5173/auth")?;
-    let app_state = AppState::new(coon, auth, secret_store);
+    let redis_url = secret_store.get("REDIS_URL").unwrap();
+    let client = redis::Client::open(redis_url).unwrap();
+    let con: redis::aio::MultiplexedConnection =
+        client.get_multiplexed_async_connection().await.unwrap();
+    let app_state = AppState::new(coon, auth, secret_store, con);
 
     let router = Router::new()
         .route("/api/graphql", post(graphql_handler).get(graphiql))

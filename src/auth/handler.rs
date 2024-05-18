@@ -16,7 +16,7 @@ use axum::{
 };
 use axum_extra::extract::cookie::{Cookie, PrivateCookieJar, SameSite};
 use oauth2::TokenResponse;
-use redis::Commands;
+use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -41,7 +41,7 @@ pub async fn authorized(
         req,
         coon,
         secret_store,
-        redis,
+        ref mut redis,
         ..
     }): State<AppState>,
     header: HeaderMap,
@@ -60,7 +60,6 @@ pub async fn authorized(
     //         anyhow!("state does not match"),
     //     ));
     // }
-    let mut redis_coon = redis.get_connection()?;
     let user_agent = header.get(header::USER_AGENT).unwrap();
     // 交换获取access_token
     let res = oauth.exchange_code(code).await?;
@@ -100,13 +99,15 @@ pub async fn authorized(
         .get("JWT_SECRET")
         .with_context(|| "get jwt secret error")?;
 
-    redis_coon.hset_multiple(
-        gen_key(RedisKeys::UserToken, user_id),
-        &[
-            ("access_token", access_token),
-            ("refresh_token", refresh_token),
-        ],
-    )?;
+    redis
+        .hset_multiple(
+            gen_key(RedisKeys::UserToken, user_id),
+            &[
+                ("access_token", access_token),
+                ("refresh_token", refresh_token),
+            ],
+        )
+        .await?;
     // 生成jwt token
     let token = Claims::new(user_id as i32).encode(&jwt_secret)?;
 
@@ -121,16 +122,18 @@ pub async fn refresh(
     claims: Claims,
     State(AppState {
         secret_store,
-        redis,
+        ref mut redis,
         ..
     }): State<AppState>,
     oauth: OAuth,
 ) -> Result<impl IntoResponse, AppError> {
-    let mut redis_coon = redis.get_connection()?;
-    let r_token: String = redis_coon.hget(
-        gen_key(RedisKeys::UserToken, claims.user_id),
-        "refresh_token",
-    )?;
+    let r_token: String = redis
+        .hget(
+            gen_key(RedisKeys::UserToken, claims.user_id),
+            "refresh_token",
+        )
+        .await?;
+
     let res = oauth.refresh_token(r_token).await?;
     let access_token = res.access_token().secret();
     let refresh_token = res
@@ -143,13 +146,15 @@ pub async fn refresh(
         .get("JWT_SECRET")
         .with_context(|| "get jwt secret error")?;
 
-    redis_coon.hset_multiple(
-        gen_key(RedisKeys::UserToken, claims.user_id),
-        &[
-            ("access_token", access_token),
-            ("refresh_token", refresh_token),
-        ],
-    )?;
+    redis
+        .hset_multiple(
+            gen_key(RedisKeys::UserToken, claims.user_id),
+            &[
+                ("access_token", access_token),
+                ("refresh_token", refresh_token),
+            ],
+        )
+        .await?;
 
     let token = Claims::new(claims.user_id).encode(&jwt_secret)?;
 

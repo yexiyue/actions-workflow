@@ -11,7 +11,7 @@ async fn main(
 ) -> shuttle_axum::ShuttleAxum {
     let coon = SqlxPostgresConnector::from_sqlx_postgres_pool(pool);
     Migrator::up(&coon, None).await.unwrap();
-    let router = actions_workflow::build_root_router(coon, secret_store)?;
+    let router = actions_workflow::build_root_router(coon, secret_store).await?;
 
     Ok(router.into())
 }

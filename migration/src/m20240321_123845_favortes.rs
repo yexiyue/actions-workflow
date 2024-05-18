@@ -13,25 +13,18 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Favorites::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(Favorites::Id)
-                            .integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
-                    )
                     .col(ColumnDef::new(Favorites::UserId).integer().not_null())
                     .col(ColumnDef::new(Favorites::TemplateId).integer().not_null())
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Favorites::Table, Favorites::Id)
+                            .from(Favorites::Table, Favorites::TemplateId)
                             .to(Template::Table, Template::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
                     )
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Favorites::Table, Favorites::Id)
+                            .from(Favorites::Table, Favorites::UserId)
                             .to(User::Table, User::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
@@ -40,6 +33,12 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Favorites::CreateAt)
                             .timestamp_with_time_zone()
                             .default(Expr::current_timestamp()),
+                    )
+                    .primary_key(
+                        Index::create()
+                            .unique()
+                            .col(Favorites::UserId)
+                            .col(Favorites::TemplateId),
                     )
                     .to_owned(),
             )
@@ -56,7 +55,6 @@ impl MigrationTrait for Migration {
 #[derive(DeriveIden)]
 enum Favorites {
     Table,
-    Id,
     UserId,
     TemplateId,
     CreateAt,

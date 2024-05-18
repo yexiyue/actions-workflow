@@ -17,8 +17,8 @@ use serde::{Deserialize, Serialize};
 #[graphql(concrete(name = "Favorites", params()))]
 pub struct Model {
     #[sea_orm(primary_key)]
-    pub id: i32,
     pub user_id: i32,
+    #[sea_orm(primary_key)]
     pub template_id: i32,
     pub create_at: Option<DateTimeWithTimeZone>,
 }
@@ -27,7 +27,7 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(
         belongs_to = "super::template::Entity",
-        from = "Column::Id",
+        from = "Column::TemplateId",
         to = "super::template::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
@@ -35,7 +35,7 @@ pub enum Relation {
     Template,
     #[sea_orm(
         belongs_to = "super::user::Entity",
-        from = "Column::Id",
+        from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"

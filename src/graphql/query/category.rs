@@ -1,8 +1,7 @@
 use crate::entity::category::Model;
+use crate::service::category::CategoryService;
 use async_graphql::{Context, Object, Result};
 use sea_orm::DbConn;
-
-use crate::service::category::CategoryService;
 
 #[derive(Debug, Default)]
 pub struct CategoryQuery;

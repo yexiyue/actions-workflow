@@ -1,5 +1,6 @@
 use crate::entity::prelude::Template;
 use crate::entity::template::{ActiveModel, Column, Model};
+use crate::service::user::UserService;
 use anyhow::Result;
 use async_graphql::InputObject;
 use sea_orm::*;
@@ -52,12 +53,16 @@ impl TemplateService {
         Ok(res.last_insert_id)
     }
 
-    pub async fn delete_by_id(db: &DbConn, id: i32) -> Result<()> {
-        let active_model = Template::find_by_id(id)
+    pub async fn delete_by_id(db: &DbConn, id: i32, user_id: i32) -> Result<()> {
+        let template = Template::find_by_id(id)
             .one(db)
             .await?
-            .ok_or(DbErr::RecordNotFound("Template not found".to_string()))?
-            .into_active_model();
+            .ok_or(DbErr::RecordNotFound("Template not found".to_string()))?;
+        if template.user_id != user_id {
+            return Err(DbErr::RecordNotFound("Permission denied".to_string()).into());
+        }
+
+        let active_model = template.into_active_model();
         active_model.delete(db).await?;
         Ok(())
     }
@@ -102,5 +107,13 @@ impl TemplateService {
         let res = active_model.update(db).await?;
 
         Ok(res)
+    }
+
+    pub async fn find_user_favorites_template(db: &DbConn, user_id: i32) -> Result<Vec<Model>> {
+        if let Some(user) = UserService::find_by_id(db, user_id).await? {
+            Ok(user.find_related(Template).all(db).await?)
+        } else {
+            Err(DbErr::RecordNotFound("user not found".into()).into())
+        }
     }
 }

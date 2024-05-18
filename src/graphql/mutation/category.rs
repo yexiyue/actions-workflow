@@ -1,8 +1,7 @@
 use crate::{entity::category::Model, service::category::CategoryInput};
+use crate::{graphql::AdminGuard, service::category::CategoryService};
 use async_graphql::{Context, Object, Result};
 use sea_orm::DbConn;
-
-use crate::{graphql::AdminGuard, service::category::CategoryService};
 
 #[derive(Debug, Default)]
 pub struct CategoryMutation;

@@ -16,7 +16,7 @@ pub(crate) struct AppState {
     pub secret_store: Arc<SecretStore>,
     pub key: Key,
     pub schema: AppSchema,
-    pub redis: redis::Client,
+    pub redis: redis::aio::MultiplexedConnection,
 }
 
 impl FromRef<AppState> for Key {
@@ -37,9 +37,12 @@ impl FromRef<AppState> for DbConn {
 }
 
 impl AppState {
-    pub fn new(coon: DbConn, auth: auth::OAuth, secret_store: SecretStore) -> Self {
-        let url = secret_store.get("REDIS_URL").unwrap();
-        let client = redis::Client::open(url).unwrap();
+    pub fn new(
+        coon: DbConn,
+        auth: auth::OAuth,
+        secret_store: SecretStore,
+        redis: redis::aio::MultiplexedConnection,
+    ) -> Self {
         Self {
             coon,
             auth,
@@ -47,7 +50,7 @@ impl AppState {
             secret_store: Arc::new(secret_store),
             key: Key::generate(),
             schema: build_schema(),
-            redis: client,
+            redis,
         }
     }
 }

@@ -2,7 +2,6 @@ use crate::entity::user::{ActiveModel, Entity as User, Model};
 use anyhow::Result;
 use sea_orm::{DbConn, EntityTrait, Set};
 
-
 pub struct UserService;
 
 impl UserService {
