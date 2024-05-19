@@ -28,8 +28,7 @@ impl AppError {
     where
         T: Into<anyhow::Error>,
     {
-        let map_fn = move |err: T| -> AppError { AppError(code, err.into()) };
-        map_fn
+        move |err: T| -> AppError { AppError(code, err.into()) }
     }
 }
 

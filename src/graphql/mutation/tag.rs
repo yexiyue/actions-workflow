@@ -14,6 +14,7 @@ pub struct TagInput {
     description: String,
 }
 
+#[allow(clippy::all)]
 impl Into<Model> for TagInput {
     fn into(self) -> Model {
         Model {

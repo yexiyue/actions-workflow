@@ -16,7 +16,6 @@ impl CommentsMutation {
     async fn add_comment(&self, ctx: &Context<'_>, input: CommentInput) -> Result<i32> {
         let db = ctx.data::<DbConn>()?;
         let claims = ctx.data::<Claims>()?;
-        let template_id = input.template_id;
         let res: i32 = CommentService::create(db, claims.user_id, input).await?;
         Ok(res)
     }

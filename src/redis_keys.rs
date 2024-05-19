@@ -7,7 +7,6 @@ pub enum RedisKeys {
     UserToken,
     TemplateDownloads,
     TemplateFavorites,
-    TemplateComments,
 }
 
 impl ToRedisArgs for RedisKeys {
@@ -25,13 +24,12 @@ impl Display for RedisKeys {
             RedisKeys::UserToken => write!(f, "user_token"),
             RedisKeys::TemplateDownloads => write!(f, "template_downloads"),
             RedisKeys::TemplateFavorites => write!(f, "template_favorites"),
-            RedisKeys::TemplateComments => write!(f, "template_comments"),
         }
     }
 }
 
 pub fn gen_key<P: Display>(key: RedisKeys, id: P) -> String {
-    format!("{}:{}", key.to_string(), id)
+    format!("{}:{}", key, id)
 }
 
 #[cfg(test)]

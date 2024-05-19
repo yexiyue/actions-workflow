@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 use sea_orm_migration::prelude::*;
 
 use crate::{m20220101_000001_create_table::User, m20240321_123520_category::Category};
