@@ -11,6 +11,11 @@ type CommentInputProps = {
   onChange?: (value: string) => void;
   onSubmit?: (value: string, userId: number) => void;
   disabled?: boolean;
+  showAvatar?: boolean;
+  placeholder?: string;
+  isReply?: boolean;
+  onBlur?: () => void;
+  autoFocus?: boolean;
 };
 
 export const CommentInput = (props: CommentInputProps) => {
@@ -21,7 +26,7 @@ export const CommentInput = (props: CommentInputProps) => {
 
   return (
     <div className="flex gap-2">
-      <Avatar src={user?.avatar_url} />
+      {props.showAvatar && <Avatar src={user?.avatar_url} />}
       <Space
         direction="vertical"
         style={{
@@ -29,25 +34,29 @@ export const CommentInput = (props: CommentInputProps) => {
         }}
       >
         <TextArea
-          placeholder={t`请输入评论`}
+          placeholder={props.placeholder ?? t`请输入评论`}
           showCount
           maxLength={300}
           disabled={!user || props.disabled}
           style={{ height: 100, resize: "none" }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onBlur={props.onBlur}
+          autoFocus={props.autoFocus}
         />
         <Space>
           <Tooltip title={user ? t`添加评论` : t`请先登陆`}>
             <Button
               type="primary"
-              disabled={!user || props.disabled}
+              disabled={
+                !user || props.disabled || !value || value?.trim().length === 0
+              }
               onClick={() => {
                 props.onSubmit?.(value, user?.id!);
                 setValue("");
               }}
             >
-              <Trans>添加评论</Trans>
+              {props.isReply ? <Trans>回复</Trans> : <Trans>评论</Trans>}
             </Button>
           </Tooltip>
           {!user && (

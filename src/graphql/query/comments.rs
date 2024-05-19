@@ -1,9 +1,5 @@
-use crate::{
-    redis_keys::RedisKeys,
-    service::comment::{CommentService, CommentWithUser},
-};
+use crate::service::comment::{CommentService, CommentWithUser};
 use async_graphql::{Context, Object, Result};
-use redis::{aio::MultiplexedConnection, AsyncCommands};
 use sea_orm::DbConn;
 
 #[derive(Debug, Default)]
@@ -18,13 +14,9 @@ impl CommentQuery {
     }
 
     /// 获取模版评论次数
-    async fn template_comment_count(&self, ctx: &Context<'_>, id: i32) -> Result<i32> {
-        let coon = ctx.data::<MultiplexedConnection>()?;
-        let mut redis = coon.clone();
-        let res = redis
-            .hget(RedisKeys::TemplateComments, id)
-            .await
-            .unwrap_or(0);
+    async fn template_comment_count(&self, ctx: &Context<'_>, id: i32) -> Result<u64> {
+        let db = ctx.data::<DbConn>()?;
+        let res = CommentService::find_template_id_count(db, id).await?;
         Ok(res)
     }
 }

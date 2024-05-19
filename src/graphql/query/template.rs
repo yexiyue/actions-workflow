@@ -2,7 +2,7 @@ use crate::{
     entity::{favorites, template::Model, user},
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::{gen_key, RedisKeys},
+    redis_keys::RedisKeys,
     service::{favorites::FavoritesService, template::TemplateService},
 };
 use async_graphql::{Context, MergedObject, Object, Result, SimpleObject};

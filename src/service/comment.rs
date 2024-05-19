@@ -3,7 +3,6 @@ use crate::entity::prelude::{Comment, User};
 use crate::entity::user;
 use anyhow::Result;
 use async_graphql::{Description, InputObject, SimpleObject};
-use chrono::prelude::*;
 use sea_orm::*;
 use serde::Serialize;
 pub struct CommentService;
@@ -40,26 +39,6 @@ impl CommentService {
         Ok(res.last_insert_id)
     }
 
-    pub async fn update(db: &DbConn, user_id: i32, model: CommentInput) -> Result<()> {
-        let comment = Comment::find_by_id(model.template_id)
-            .one(db)
-            .await?
-            .ok_or(DbErr::RecordNotFound("Template not found".to_string()))?;
-
-        if comment.user_id != user_id {
-            return Err(DbErr::RecordNotFound("Permission denied".to_string()).into());
-        }
-
-        let mut active_model = comment.into_active_model();
-        active_model.content = Set(model.content);
-
-        let now = Utc::now().naive_utc();
-        active_model.create_at = Set(Some(now));
-        active_model.update(db).await?;
-
-        Ok(())
-    }
-
     pub async fn delete_by_id(db: &DbConn, user_id: i32, id: i32) -> Result<Model> {
         let comment = Comment::find_by_id(id)
             .one(db)
@@ -87,11 +66,21 @@ impl CommentService {
 
         let res = comments
             .into_iter()
+            .rev()
             .map(|(comment, user)| CommentWithUser {
                 comment,
                 user: user.unwrap(),
             })
             .collect::<Vec<_>>();
         Ok(res)
+    }
+
+    pub async fn find_template_id_count(db: &DbConn, template_id: i32) -> Result<u64> {
+        let count = Comment::find()
+            .filter(Column::TemplateId.eq(template_id))
+            .count(db)
+            .await?;
+
+        Ok(count)
     }
 }

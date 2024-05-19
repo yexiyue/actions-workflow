@@ -1,14 +1,17 @@
 import { gql } from "@/__generated__";
-import { CommentInput } from "./CommentInput";
+import { CommentWithUser } from "@/__generated__/graphql";
 import { useMutation, useQuery } from "@apollo/client";
-import { App } from "antd";
 import { t } from "@lingui/macro";
+import { App, Divider } from "antd";
+import { useMemo } from "react";
+import { CommentIem } from "./CommentIem";
+import { CommentInput } from "./CommentInput";
 
 type CommentsInputProps = {
   id: number;
 };
 
-const COMMENT = gql(`
+export const COMMENT = gql(`
   mutation addComment($input: CommentInput!) {
     addComment(input: $input)
   }
@@ -18,6 +21,7 @@ const QUERY_COMMENT = gql(`
   query QueryComments($templateId: Int!){
     comments(id: $templateId){
       user{
+        id
         avatarUrl
         username
       }
@@ -26,10 +30,50 @@ const QUERY_COMMENT = gql(`
         content
         parentCommentId
         createAt
+        templateId
+        userId
       }
     }
   }
 `);
+
+type CommentWithChildren = CommentWithUser & {
+  children?: CommentWithChildren[];
+};
+
+function genCommentTree(data: CommentWithUser[]) {
+  if (!data) return [];
+  const len = data.length;
+  const map = new Map();
+
+  for (let i = 0; i < len; i++) {
+    map.set(data[i].comment.id, data[i]);
+  }
+  const res: CommentWithChildren[] = [];
+  for (let i = 0; i < len; i++) {
+    if (data[i].comment.parentCommentId) {
+      const comment = map.get(data[i].comment.parentCommentId);
+      if (comment.children) {
+        comment.children.push(data[i]);
+      } else {
+        comment.children = [data[i]];
+      }
+    } else {
+      res.push(data[i]);
+    }
+  }
+  return res;
+}
+
+function mapCommentTree(data: CommentWithChildren[]) {
+  return data.map((i) => {
+    return (
+      <CommentIem key={i.comment.id} user={i.user} comment={i.comment}>
+        {i.children && mapCommentTree(i.children)}
+      </CommentIem>
+    );
+  });
+}
 
 export const Comments = (props: CommentsInputProps) => {
   const [addComment] = useMutation(COMMENT);
@@ -38,11 +82,19 @@ export const Comments = (props: CommentsInputProps) => {
       templateId: props.id,
     },
   });
-  console.log(data);
+  const commentsData = useMemo(() => {
+    if (data?.comments) {
+      return genCommentTree(structuredClone(data.comments));
+    } else {
+      return [];
+    }
+  }, [data]);
+
   const { message } = App.useApp();
   return (
-    <div>
+    <>
       <CommentInput
+        showAvatar
         onSubmit={async (value) => {
           try {
             await addComment({
@@ -53,7 +105,7 @@ export const Comments = (props: CommentsInputProps) => {
                   parentCommentId: null,
                 },
               },
-              refetchQueries: ["TemplateAndReadme"],
+              refetchQueries: ["TemplateAndReadme", "QueryComments"],
             });
             message.success(t`评论成功`);
           } catch (err) {
@@ -62,7 +114,8 @@ export const Comments = (props: CommentsInputProps) => {
           }
         }}
       />
-      comments
-    </div>
+      <Divider />
+      {mapCommentTree(commentsData)}
+    </>
   );
 };

@@ -1,5 +1,5 @@
+use crate::entity::prelude::Favorites;
 use crate::entity::prelude::Template;
-use crate::entity::prelude::{Favorites, User};
 use crate::entity::template::{ActiveModel, Column, Model};
 use crate::entity::user;
 use crate::service::user::UserService;

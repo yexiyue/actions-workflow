@@ -13,6 +13,7 @@ import {
   App,
   Avatar,
   Button,
+  Drawer,
   Empty,
   Space,
   Statistic,
@@ -22,7 +23,7 @@ import {
   Typography,
 } from "antd";
 import { ClipboardCopy, Undo2 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import PrefectScrollbar from "react-perfect-scrollbar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,6 +31,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import styles from "./index.module.less";
 import { Comments } from "@/components/Comments";
+import ScrollBar from "react-perfect-scrollbar";
 
 const query = gql(`
 query TemplateAndReadme($id:Int!){
@@ -71,6 +73,7 @@ export const Component = () => {
   const navigate = useNavigate();
   const { message } = App.useApp();
   const { formatTime, calcRelativeTimeNow } = useTime();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [favorite] = useMutation(ADD_FAVORITE, {
     variables: {
       id: parseInt(id!),
@@ -188,7 +191,13 @@ export const Component = () => {
             ></Button>
           </Tooltip>
           <Tooltip title={t`评论`} placement="right">
-            <Button shape="circle" icon={<CommentOutlined />}></Button>
+            <Button
+              shape="circle"
+              icon={<CommentOutlined />}
+              onClick={() => {
+                setDrawerOpen(true);
+              }}
+            ></Button>
           </Tooltip>
         </div>
         <div
@@ -275,7 +284,9 @@ export const Component = () => {
               }}
             >
               <Tabs items={items} className={styles.tabs} />
-              <Comments id={parseInt(id!)} />
+              <div className="p-4 border rounded-lg py-6 mt-4">
+                <Comments id={parseInt(id!)} />
+              </div>
             </div>
             <div className="w-[280px] h-[500px] bg-gray-100 mt-4 rounded-lg sticky top-4 p-4">
               <h4>
@@ -340,6 +351,16 @@ export const Component = () => {
           </div>
         </div>
       </PrefectScrollbar>
+      <Drawer
+        title={<Trans>评论</Trans>}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
+        open={drawerOpen}
+        width={500}
+      >
+        <Comments id={parseInt(id!)} />
+      </Drawer>
     </div>
   );
 };

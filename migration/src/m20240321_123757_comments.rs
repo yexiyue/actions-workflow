@@ -26,7 +26,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Comment::Content).string().not_null())
                     .col(
                         ColumnDef::new(Comment::CreateAt)
-                            .timestamp()
+                            .timestamp_with_time_zone()
                             .default(Expr::current_timestamp()),
                     )
                     .foreign_key(
@@ -40,6 +40,13 @@ impl MigrationTrait for Migration {
                         ForeignKey::create()
                             .from(Comment::Table, Comment::UserId)
                             .to(User::Table, User::Id)
+                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_update(ForeignKeyAction::Cascade),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Comment::Table, Comment::ParentCommentId)
+                            .to(Comment::Table, Comment::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
                     )

@@ -45,17 +45,4 @@ impl TemplateMutation {
         redis.hincr(RedisKeys::TemplateDownloads, id, 1).await?;
         Ok("ok")
     }
-
-    async fn dec_download_count(&self, ctx: &Context<'_>, id: i32) -> Result<&'static str> {
-        let redis = ctx.data::<MultiplexedConnection>()?;
-        let mut redis = redis.clone();
-        redis::cmd("hincrby")
-            .arg(RedisKeys::TemplateDownloads)
-            .arg(id)
-            .arg(-1)
-            .query_async(&mut redis)
-            .await?;
-
-        Ok("ok")
-    }
 }
