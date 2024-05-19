@@ -23,7 +23,7 @@ impl CategoryMutation {
         category: CategoryInput,
     ) -> Result<Model> {
         let db = ctx.data::<DbConn>()?;
-        let res = CategoryService::update_by_id(db, id, category.into()).await?;
+        let res = CategoryService::update_by_id(db, id, category).await?;
         Ok(res)
     }
 

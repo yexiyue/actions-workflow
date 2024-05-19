@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -8,6 +9,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         lazy: () => import("@/pages/Home"),
+      },
+      {
+        path: "template/:id",
+        lazy: () => import("@/pages/templates"),
       },
     ],
   },

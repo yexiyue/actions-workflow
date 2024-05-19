@@ -16,9 +16,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "favorites")]
 #[graphql(concrete(name = "Favorites", params()))]
 pub struct Model {
-    #[sea_orm(primary_key)]
+    #[sea_orm(primary_key, auto_increment = false)]
     pub user_id: i32,
-    #[sea_orm(primary_key)]
+    #[sea_orm(primary_key, auto_increment = false)]
     pub template_id: i32,
     pub create_at: Option<DateTimeWithTimeZone>,
 }

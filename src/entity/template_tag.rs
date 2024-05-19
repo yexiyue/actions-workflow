@@ -26,7 +26,7 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(
         belongs_to = "super::tag::Entity",
-        from = "Column::Id",
+        from = "Column::TagId",
         to = "super::tag::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
@@ -34,7 +34,7 @@ pub enum Relation {
     Tag,
     #[sea_orm(
         belongs_to = "super::template::Entity",
-        from = "Column::Id",
+        from = "Column::TemplateId",
         to = "super::template::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"

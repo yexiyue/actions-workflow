@@ -36,7 +36,6 @@ impl MigrationTrait for Migration {
                     )
                     .primary_key(
                         Index::create()
-                            .unique()
                             .col(Favorites::UserId)
                             .col(Favorites::TemplateId),
                     )

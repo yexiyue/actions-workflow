@@ -24,14 +24,14 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(TemplateTag::TagId).integer().not_null())
                     .foreign_key(
                         ForeignKey::create()
-                            .from(TemplateTag::Table, TemplateTag::Id)
+                            .from(TemplateTag::Table, TemplateTag::TemplateId)
                             .to(Template::Table, Template::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
                     )
                     .foreign_key(
                         ForeignKey::create()
-                            .from(TemplateTag::Table, TemplateTag::Id)
+                            .from(TemplateTag::Table, TemplateTag::TagId)
                             .to(Tag::Table, Tag::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),

@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
     async_graphql :: SimpleObject,
 )]
 #[sea_orm(table_name = "comment")]
-#[graphql(concrete(name = "Comment", params()))]
+# [graphql (concrete (name = "Comment", params ()))]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -29,7 +29,7 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(
         belongs_to = "super::template::Entity",
-        from = "Column::Id",
+        from = "Column::TemplateId",
         to = "super::template::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
@@ -37,7 +37,7 @@ pub enum Relation {
     Template,
     #[sea_orm(
         belongs_to = "super::user::Entity",
-        from = "Column::Id",
+        from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"

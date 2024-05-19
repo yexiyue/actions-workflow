@@ -1,3 +1,4 @@
+use super::OAuth;
 use crate::{
     error::AppError,
     jwt::Claims,
@@ -5,8 +6,6 @@ use crate::{
     service::user::UserService,
     AppState,
 };
-
-use super::OAuth;
 use anyhow::{Context, Result};
 use axum::{
     extract::State,

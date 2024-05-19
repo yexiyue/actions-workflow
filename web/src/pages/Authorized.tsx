@@ -10,6 +10,7 @@ import { useUserStore } from "@/stores/useUserStore";
 export const Component = () => {
   useLingui();
   const navigate = useNavigate();
+  console.log(history);
   const [setUser] = useUserStore((store) => [store.setUser]);
   const { message } = App.useApp();
   const [params] = useSearchParams();
@@ -67,11 +68,15 @@ export const Component = () => {
               type="primary"
               icon={<HomeOutlined />}
               onClick={() => {
-                navigate("/");
+                if (history.length > 2) {
+                  navigate(-2);
+                } else {
+                  navigate("/");
+                }
               }}
             >
               <>
-                <Trans>返回首页</Trans>
+                {history.length > 2 ? <Trans>返回</Trans> : <Trans>首页</Trans>}
               </>
             </Button>
           </div>

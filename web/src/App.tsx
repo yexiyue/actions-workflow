@@ -19,7 +19,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");
-  console.log(token);
   return {
     headers: {
       ...headers,
@@ -39,7 +38,7 @@ function App() {
     <ApolloProvider client={client}>
       <I18nProvider i18n={i18n}>
         <LanguageContext.Provider value={data}>
-          <StyleProvider hashPriority="high">
+          <StyleProvider hashPriority="low">
             <ConfigProvider locale={data.antdLocal}>
               <AppProvider>
                 <RouterProvider router={router}></RouterProvider>

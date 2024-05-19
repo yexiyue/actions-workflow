@@ -47,7 +47,10 @@ impl Related<super::favorites::Entity> for Entity {
 
 impl Related<super::template::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Template.def()
+        super::favorites::Relation::Template.def()
+    }
+    fn via() -> Option<RelationDef> {
+        Some(super::favorites::Relation::User.def().rev())
     }
 }
 

@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use redis::ToRedisArgs;
+
 #[derive(Debug)]
 pub enum RedisKeys {
     UserToken,
@@ -8,13 +10,22 @@ pub enum RedisKeys {
     TemplateComments,
 }
 
-impl ToString for RedisKeys {
-    fn to_string(&self) -> String {
+impl ToRedisArgs for RedisKeys {
+    fn write_redis_args<W>(&self, out: &mut W)
+    where
+        W: ?Sized + redis::RedisWrite,
+    {
+        out.write_arg_fmt(self)
+    }
+}
+
+impl Display for RedisKeys {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            RedisKeys::UserToken => "user_token".to_string(),
-            RedisKeys::TemplateDownloads => "template_downloads".to_string(),
-            RedisKeys::TemplateFavorites => "template_favorites".to_string(),
-            RedisKeys::TemplateComments => "template_comments".to_string(),
+            RedisKeys::UserToken => write!(f, "user_token"),
+            RedisKeys::TemplateDownloads => write!(f, "template_downloads"),
+            RedisKeys::TemplateFavorites => write!(f, "template_favorites"),
+            RedisKeys::TemplateComments => write!(f, "template_comments"),
         }
     }
 }

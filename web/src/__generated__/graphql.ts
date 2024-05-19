@@ -22,6 +22,14 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
   /** A scalar that can represent any JSON value. */
   JSON: { input: any; output: any; }
+  /**
+   * ISO 8601 combined date and time without timezone.
+   *
+   * # Examples
+   *
+   * * `2015-07-01T08:59:60.123`,
+   */
+  NaiveDateTime: { input: any; output: any; }
 };
 
 export type Category = {
@@ -36,16 +44,60 @@ export type CategoryInput = {
   name: Scalars['String']['input'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  content: Scalars['String']['output'];
+  createAt?: Maybe<Scalars['NaiveDateTime']['output']>;
+  id: Scalars['Int']['output'];
+  parentCommentId?: Maybe<Scalars['Int']['output']>;
+  templateId: Scalars['Int']['output'];
+  userId: Scalars['Int']['output'];
+};
+
+export type CommentInput = {
+  content: Scalars['String']['input'];
+  parentCommentId?: InputMaybe<Scalars['Int']['input']>;
+  templateId: Scalars['Int']['input'];
+};
+
+export type CommentWithUser = {
+  __typename?: 'CommentWithUser';
+  comment: Comment;
+  user: User;
+};
+
+export type Favorites = {
+  __typename?: 'Favorites';
+  createAt?: Maybe<Scalars['DateTime']['output']>;
+  templateId: Scalars['Int']['output'];
+  userId: Scalars['Int']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  /** 添加评论 */
+  addComment: Scalars['Int']['output'];
   createCategory: Scalars['Int']['output'];
   createTag: Tag;
   createTemplate: Scalars['Int']['output'];
   deleteCategory: Scalars['String']['output'];
+  /** 删除评论 */
+  deleteComment: Scalars['String']['output'];
   deleteTag: Scalars['String']['output'];
+  deleteTemplate: Scalars['String']['output'];
+  disFavorite: Scalars['String']['output'];
+  favorite: Scalars['String']['output'];
+  increaseDownloadCount: Scalars['String']['output'];
   updateCategory: Category;
+  /** 更新评论 */
+  updateComment: Scalars['String']['output'];
   updateTag: Tag;
   updateTemplate: Template;
+};
+
+
+export type MutationAddCommentArgs = {
+  input: CommentInput;
 };
 
 
@@ -69,7 +121,32 @@ export type MutationDeleteCategoryArgs = {
 };
 
 
+export type MutationDeleteCommentArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteTagArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteTemplateArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDisFavoriteArgs = {
+  templateId: Scalars['Int']['input'];
+};
+
+
+export type MutationFavoriteArgs = {
+  templateId: Scalars['Int']['input'];
+};
+
+
+export type MutationIncreaseDownloadCountArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -77,6 +154,11 @@ export type MutationDeleteTagArgs = {
 export type MutationUpdateCategoryArgs = {
   category: CategoryInput;
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateCommentArgs = {
+  input: CommentInput;
 };
 
 
@@ -94,8 +176,17 @@ export type MutationUpdateTemplateArgs = {
 export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
+  comments: Array<CommentWithUser>;
+  favoriteTemplates: Array<Maybe<Template>>;
   /** 通过ID获取模版详情 */
-  templateById?: Maybe<Template>;
+  templateById: Template;
+  /** 获取模版评论次数 */
+  templateCommentCount: Scalars['Int']['output'];
+  /** 获取模版下载次数 */
+  templateDownloadCount: Scalars['Int']['output'];
+  /** 获取模版收藏次数 */
+  templateFavoriteCount: Scalars['Int']['output'];
+  templateWithUser: TemplateWithUser;
   templates: Array<Template>;
   /** 需要权限 */
   templatesByUser: Array<Template>;
@@ -106,7 +197,32 @@ export type Query = {
 };
 
 
+export type QueryCommentsArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryTemplateByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryTemplateCommentCountArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryTemplateDownloadCountArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryTemplateFavoriteCountArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryTemplateWithUserArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -166,6 +282,24 @@ export type TemplateUpdateInput = {
   template: Scalars['String']['input'];
 };
 
+export type TemplateWithUser = {
+  __typename?: 'TemplateWithUser';
+  avatarUrl: Scalars['String']['output'];
+  categoryId: Scalars['Int']['output'];
+  config: Scalars['String']['output'];
+  createAt?: Maybe<Scalars['DateTime']['output']>;
+  favorites: Array<Favorites>;
+  id: Scalars['Int']['output'];
+  isPublic: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  readme?: Maybe<Scalars['String']['output']>;
+  sourceCodeUrl?: Maybe<Scalars['String']['output']>;
+  template: Scalars['String']['output'];
+  updateAt?: Maybe<Scalars['DateTime']['output']>;
+  userId: Scalars['Int']['output'];
+  username: Scalars['String']['output'];
+};
+
 export type User = {
   __typename?: 'User';
   avatarUrl: Scalars['String']['output'];
@@ -174,10 +308,64 @@ export type User = {
   username: Scalars['String']['output'];
 };
 
+export type AddCommentMutationVariables = Exact<{
+  input: CommentInput;
+}>;
+
+
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: number };
+
+export type QueryCommentsQueryVariables = Exact<{
+  templateId: Scalars['Int']['input'];
+}>;
+
+
+export type QueryCommentsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'CommentWithUser', user: { __typename?: 'User', avatarUrl: string, username: string }, comment: { __typename?: 'Comment', id: number, content: string, parentCommentId?: number | null, createAt?: any | null } }> };
+
+export type TemplateQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type TemplateQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, username: string, avatarUrl: string } };
+
+export type UserFavoriteTemplateQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserFavoriteTemplateQuery = { __typename?: 'Query', favoriteTemplates: Array<{ __typename?: 'Template', id: number } | null> };
+
 export type TemplatesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TemplatesQuery = { __typename?: 'Query', templates: Array<{ __typename?: 'Template', id: number, name: string, categoryId: number, createAt?: any | null, sourceCodeUrl?: string | null }> };
+export type TemplatesQuery = { __typename?: 'Query', templates: Array<{ __typename?: 'Template', id: number }> };
+
+export type TemplateAndReadmeQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
 
 
-export const TemplatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"categoryId"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"sourceCodeUrl"}}]}}]}}]} as unknown as DocumentNode<TemplatesQuery, TemplatesQueryVariables>;
+export type TemplateAndReadmeQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, readme?: string | null, template: string, username: string, avatarUrl: string, createAt?: any | null, updateAt?: any | null, sourceCodeUrl?: string | null, favorites: Array<{ __typename?: 'Favorites', userId: number }> } };
+
+export type AddFavoriteMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type AddFavoriteMutation = { __typename?: 'Mutation', favorite: string };
+
+export type DisFavoriteMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DisFavoriteMutation = { __typename?: 'Mutation', disFavorite: string };
+
+
+export const AddCommentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addComment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CommentInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addComment"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<AddCommentMutation, AddCommentMutationVariables>;
+export const QueryCommentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"QueryComments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"templateId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"comments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"templateId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"parentCommentId"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}}]}}]}}]}}]} as unknown as DocumentNode<QueryCommentsQuery, QueryCommentsQueryVariables>;
+export const TemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Template"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateQuery, TemplateQueryVariables>;
+export const UserFavoriteTemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UserFavoriteTemplate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"favoriteTemplates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UserFavoriteTemplateQuery, UserFavoriteTemplateQueryVariables>;
+export const TemplatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<TemplatesQuery, TemplatesQueryVariables>;
+export const TemplateAndReadmeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TemplateAndReadme"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"readme"}},{"kind":"Field","name":{"kind":"Name","value":"template"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"favorites"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}},{"kind":"Field","name":{"kind":"Name","value":"sourceCodeUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateAndReadmeQuery, TemplateAndReadmeQueryVariables>;
+export const AddFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"favorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"templateId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<AddFavoriteMutation, AddFavoriteMutationVariables>;
+export const DisFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"disFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disFavorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"templateId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DisFavoriteMutation, DisFavoriteMutationVariables>;

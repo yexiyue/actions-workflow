@@ -1,5 +1,13 @@
 import { Trans } from "@lingui/macro";
-import { Avatar, Button, Dropdown, MenuProps, Tooltip } from "antd";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  MenuProps,
+  Space,
+  Tooltip,
+  Typography,
+} from "antd";
 import { GithubOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { Languages } from "lucide-react";
@@ -31,19 +39,22 @@ export const Header = () => {
           ></Button>
         </Tooltip>
         {user ? (
-          <Dropdown
-            menu={{
-              items,
-              onClick: ({ key }) => {
-                if (key === "logout") {
-                  logout();
-                }
-              },
-            }}
-            placement="bottom"
-          >
-            <Avatar className=" cursor-pointer" src={user.avatar_url} />
-          </Dropdown>
+          <Space>
+            <Dropdown
+              menu={{
+                items,
+                onClick: ({ key }) => {
+                  if (key === "logout") {
+                    logout();
+                  }
+                },
+              }}
+              placement="bottom"
+            >
+              <Avatar className="cursor-pointer" src={user.avatar_url} />
+            </Dropdown>
+            <Typography.Text>{user.username}</Typography.Text>
+          </Space>
         ) : (
           <Tooltip title={<Trans>登陆</Trans>} placement="bottom">
             <Button

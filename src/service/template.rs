@@ -1,5 +1,7 @@
 use crate::entity::prelude::Template;
+use crate::entity::prelude::{Favorites, User};
 use crate::entity::template::{ActiveModel, Column, Model};
+use crate::entity::user;
 use crate::service::user::UserService;
 use anyhow::Result;
 use async_graphql::InputObject;
@@ -85,9 +87,21 @@ impl TemplateService {
         Ok(res)
     }
 
-    pub async fn find_by_id(db: &DbConn, id: i32) -> Result<Option<Model>> {
-        let res = Template::find_by_id(id).one(db).await?;
+    pub async fn find_by_id(db: &DbConn, id: i32) -> Result<Model> {
+        let res = Template::find_by_id(id)
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound("Template not found".into()))?;
         Ok(res)
+    }
+
+    pub async fn find_by_id_with_user(db: &DbConn, id: i32) -> Result<(Model, user::Model)> {
+        let res = Template::find_by_id(id)
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound("Template not found".into()))?;
+        let user = UserService::find_by_id(db, res.user_id).await?.unwrap();
+        Ok((res, user))
     }
 
     pub async fn update_by_id(db: &DbConn, id: i32, model: TemplateUpdateInput) -> Result<Model> {
@@ -109,9 +123,14 @@ impl TemplateService {
         Ok(res)
     }
 
-    pub async fn find_user_favorites_template(db: &DbConn, user_id: i32) -> Result<Vec<Model>> {
+    pub async fn find_user_favorites_template(
+        db: &DbConn,
+        user_id: i32,
+    ) -> Result<Vec<Option<Model>>> {
         if let Some(user) = UserService::find_by_id(db, user_id).await? {
-            Ok(user.find_related(Template).all(db).await?)
+            let favorites = user.find_related(Favorites).all(db).await?;
+            let res = favorites.load_one(Template, db).await?;
+            Ok(res)
         } else {
             Err(DbErr::RecordNotFound("user not found".into()).into())
         }

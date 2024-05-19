@@ -42,4 +42,9 @@ impl FavoritesService {
         active_model.delete(db).await?;
         Ok(())
     }
+
+    pub async fn find_template_favorite_users(db: &DbConn, template_id: i32) -> Result<Vec<Model>> {
+        let template = TemplateService::find_by_id(db, template_id).await?;
+        Ok(template.find_related(Favorites).all(db).await?)
+    }
 }

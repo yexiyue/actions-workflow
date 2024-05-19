@@ -37,7 +37,7 @@ pub async fn build_root_router(coon: DbConn, secret_store: SecretStore) -> Resul
         .with_state(app_state.clone())
         .layer(CompressionLayer::new().gzip(true))
         .layer(PropagateRequestIdLayer::x_request_id())
-        .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid::default()))
+        .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
         .layer(TimeoutLayer::new(Duration::from_secs(10)))
         .layer(CorsLayer::permissive());
     Ok(router)

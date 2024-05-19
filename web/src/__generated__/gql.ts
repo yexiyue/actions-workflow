@@ -13,7 +13,14 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query Templates {\n    templates {\n      id\n      name\n      categoryId\n      createAt\n      sourceCodeUrl\n    }\n  }\n": types.TemplatesDocument,
+    "\n  mutation addComment($input: CommentInput!) {\n    addComment(input: $input)\n  }\n": types.AddCommentDocument,
+    "\n  query QueryComments($templateId: Int!){\n    comments(id: $templateId){\n      user{\n        avatarUrl\n        username\n      }\n      comment{\n        id\n        content\n        parentCommentId\n        createAt\n      }\n    }\n  }\n": types.QueryCommentsDocument,
+    "\n  query Template($id:Int!){\n      templateWithUser(id: $id){\n        name\n        config\n        username,\n        avatarUrl,\n      }\n      templateDownloadCount(id: $id)\n      templateFavoriteCount(id: $id)\n      templateCommentCount(id: $id)\n  }\n": types.TemplateDocument,
+    "\nquery UserFavoriteTemplate{\n  favoriteTemplates{\n    id,\n  }\n}\n": types.UserFavoriteTemplateDocument,
+    "\n  query Templates {\n    templates {\n      id\n    }\n  }\n": types.TemplatesDocument,
+    "\nquery TemplateAndReadme($id:Int!){\n  templateWithUser(id: $id){\n    name\n    config\n    readme\n    template,\n    username,\n    avatarUrl,\n    favorites{\n      userId\n    }\n    createAt\n    updateAt\n    sourceCodeUrl\n  }\n  templateDownloadCount(id: $id)\n  templateFavoriteCount(id: $id)\n  templateCommentCount(id: $id)\n}\n": types.TemplateAndReadmeDocument,
+    "\n  mutation addFavorite($id: Int!) {\n    favorite(templateId: $id)\n  }\n": types.AddFavoriteDocument,
+    "\n  mutation disFavorite($id: Int!) {\n    disFavorite(templateId: $id)\n  }\n": types.DisFavoriteDocument,
 };
 
 /**
@@ -33,7 +40,35 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Templates {\n    templates {\n      id\n      name\n      categoryId\n      createAt\n      sourceCodeUrl\n    }\n  }\n"): (typeof documents)["\n  query Templates {\n    templates {\n      id\n      name\n      categoryId\n      createAt\n      sourceCodeUrl\n    }\n  }\n"];
+export function gql(source: "\n  mutation addComment($input: CommentInput!) {\n    addComment(input: $input)\n  }\n"): (typeof documents)["\n  mutation addComment($input: CommentInput!) {\n    addComment(input: $input)\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query QueryComments($templateId: Int!){\n    comments(id: $templateId){\n      user{\n        avatarUrl\n        username\n      }\n      comment{\n        id\n        content\n        parentCommentId\n        createAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query QueryComments($templateId: Int!){\n    comments(id: $templateId){\n      user{\n        avatarUrl\n        username\n      }\n      comment{\n        id\n        content\n        parentCommentId\n        createAt\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Template($id:Int!){\n      templateWithUser(id: $id){\n        name\n        config\n        username,\n        avatarUrl,\n      }\n      templateDownloadCount(id: $id)\n      templateFavoriteCount(id: $id)\n      templateCommentCount(id: $id)\n  }\n"): (typeof documents)["\n  query Template($id:Int!){\n      templateWithUser(id: $id){\n        name\n        config\n        username,\n        avatarUrl,\n      }\n      templateDownloadCount(id: $id)\n      templateFavoriteCount(id: $id)\n      templateCommentCount(id: $id)\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery UserFavoriteTemplate{\n  favoriteTemplates{\n    id,\n  }\n}\n"): (typeof documents)["\nquery UserFavoriteTemplate{\n  favoriteTemplates{\n    id,\n  }\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Templates {\n    templates {\n      id\n    }\n  }\n"): (typeof documents)["\n  query Templates {\n    templates {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery TemplateAndReadme($id:Int!){\n  templateWithUser(id: $id){\n    name\n    config\n    readme\n    template,\n    username,\n    avatarUrl,\n    favorites{\n      userId\n    }\n    createAt\n    updateAt\n    sourceCodeUrl\n  }\n  templateDownloadCount(id: $id)\n  templateFavoriteCount(id: $id)\n  templateCommentCount(id: $id)\n}\n"): (typeof documents)["\nquery TemplateAndReadme($id:Int!){\n  templateWithUser(id: $id){\n    name\n    config\n    readme\n    template,\n    username,\n    avatarUrl,\n    favorites{\n      userId\n    }\n    createAt\n    updateAt\n    sourceCodeUrl\n  }\n  templateDownloadCount(id: $id)\n  templateFavoriteCount(id: $id)\n  templateCommentCount(id: $id)\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation addFavorite($id: Int!) {\n    favorite(templateId: $id)\n  }\n"): (typeof documents)["\n  mutation addFavorite($id: Int!) {\n    favorite(templateId: $id)\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation disFavorite($id: Int!) {\n    disFavorite(templateId: $id)\n  }\n"): (typeof documents)["\n  mutation disFavorite($id: Int!) {\n    disFavorite(templateId: $id)\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

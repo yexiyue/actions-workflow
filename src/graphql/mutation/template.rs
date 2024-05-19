@@ -2,7 +2,7 @@ use crate::{
     entity::template::Model,
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::gen_key,
+    redis_keys::RedisKeys,
     service::template::{TemplateCreateInput, TemplateService, TemplateUpdateInput},
 };
 use async_graphql::{Context, Object, Result};
@@ -42,12 +42,20 @@ impl TemplateMutation {
     async fn increase_download_count(&self, ctx: &Context<'_>, id: i32) -> Result<&'static str> {
         let redis = ctx.data::<MultiplexedConnection>()?;
         let mut redis = redis.clone();
-        redis
-            .incr(
-                gen_key(crate::redis_keys::RedisKeys::TemplateDownloads, id),
-                1,
-            )
+        redis.hincr(RedisKeys::TemplateDownloads, id, 1).await?;
+        Ok("ok")
+    }
+
+    async fn dec_download_count(&self, ctx: &Context<'_>, id: i32) -> Result<&'static str> {
+        let redis = ctx.data::<MultiplexedConnection>()?;
+        let mut redis = redis.clone();
+        redis::cmd("hincrby")
+            .arg(RedisKeys::TemplateDownloads)
+            .arg(id)
+            .arg(-1)
+            .query_async(&mut redis)
             .await?;
+
         Ok("ok")
     }
 }

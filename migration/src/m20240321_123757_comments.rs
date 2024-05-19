@@ -31,14 +31,14 @@ impl MigrationTrait for Migration {
                     )
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Comment::Table, Comment::Id)
+                            .from(Comment::Table, Comment::TemplateId)
                             .to(Template::Table, Template::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),
                     )
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Comment::Table, Comment::Id)
+                            .from(Comment::Table, Comment::UserId)
                             .to(User::Table, User::Id)
                             .on_delete(ForeignKeyAction::Cascade)
                             .on_update(ForeignKeyAction::Cascade),

@@ -1,11 +1,12 @@
 use crate::{
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::gen_key,
+    redis_keys::RedisKeys,
     service::comment::{CommentInput, CommentService},
 };
 use async_graphql::{Context, Object, Result};
 use redis::{aio::MultiplexedConnection, AsyncCommands};
+use sea_orm::DbConn;
 
 #[derive(Debug, Default)]
 pub struct CommentsMutation;
@@ -14,19 +15,16 @@ pub struct CommentsMutation;
 impl CommentsMutation {
     /// 添加评论
     #[graphql(guard = "AuthGuard")]
-    async fn comment(&self, ctx: &Context<'_>, input: CommentInput) -> Result<i32> {
-        let db = ctx.data()?;
+    async fn add_comment(&self, ctx: &Context<'_>, input: CommentInput) -> Result<i32> {
+        let db = ctx.data::<DbConn>()?;
         let claims = ctx.data::<Claims>()?;
         let template_id = input.template_id;
-        let res = CommentService::create(db, claims.user_id, input).await?;
+        let res: i32 = CommentService::create(db, claims.user_id, input).await?;
 
         let coon = ctx.data::<MultiplexedConnection>()?;
         let mut redis = coon.clone();
         redis
-            .incr(
-                gen_key(crate::redis_keys::RedisKeys::TemplateComments, template_id),
-                1,
-            )
+            .hincr(RedisKeys::TemplateComments, template_id, 1)
             .await?;
 
         Ok(res)
@@ -49,14 +47,11 @@ impl CommentsMutation {
         let comment = CommentService::delete_by_id(db, claims.user_id, id).await?;
         let coon = ctx.data::<MultiplexedConnection>()?;
         let mut redis = coon.clone();
-        redis
-            .incr(
-                gen_key(
-                    crate::redis_keys::RedisKeys::TemplateComments,
-                    comment.template_id,
-                ),
-                1,
-            )
+        redis::cmd("hincrby")
+            .arg(RedisKeys::TemplateComments)
+            .arg(comment.template_id)
+            .arg(-1)
+            .query_async(&mut redis)
             .await?;
         Ok("success")
     }

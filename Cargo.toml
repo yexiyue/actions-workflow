@@ -37,7 +37,7 @@ axum-extra = { version = "0.9.3", features = [
 ] }
 oauth2 = "4.4.2"
 reqwest = { version = "0.12.4", features = ["json"] }
-redis = { version = "0.25.3", features = ["tokio-comp", "aio", "tokio", "tokio-native-tls", "tokio-native-tls-comp"] }
+redis = { version = "0.25.3", features = ["tokio-comp", "aio", "tokio", "tokio-native-tls", "tokio-native-tls-comp", "tls"] }
 
 [workspace]
 members = ["migration"]

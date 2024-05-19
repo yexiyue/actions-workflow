@@ -1,13 +1,25 @@
 use crate::{
-    entity::template::Model, graphql::AuthGuard, jwt::Claims, redis_keys::gen_key,
-    service::template::TemplateService,
+    entity::{favorites, template::Model, user},
+    graphql::AuthGuard,
+    jwt::Claims,
+    redis_keys::{gen_key, RedisKeys},
+    service::{favorites::FavoritesService, template::TemplateService},
 };
-use async_graphql::{Context, Object, Result};
+use async_graphql::{Context, MergedObject, Object, Result, SimpleObject};
 use redis::{aio::MultiplexedConnection, AsyncCommands};
 use sea_orm::DbConn;
+use serde::Serialize;
 
 #[derive(Debug, Default)]
 pub struct TemplateQuery;
+
+#[derive(Debug, Serialize, MergedObject)]
+pub struct TemplateWithUser(user::Model, Model, TemplateFavorites);
+
+#[derive(Debug, SimpleObject, Serialize)]
+pub struct TemplateFavorites {
+    pub favorites: Vec<favorites::Model>,
+}
 
 #[Object]
 impl TemplateQuery {
@@ -18,16 +30,29 @@ impl TemplateQuery {
     }
 
     #[graphql(guard = "AuthGuard")]
-    async fn favorite_templates(&self, ctx: &Context<'_>) -> Result<Vec<Model>> {
+    async fn favorite_templates(&self, ctx: &Context<'_>) -> Result<Vec<Option<Model>>> {
         let db = ctx.data::<DbConn>()?;
         let claims = ctx.data::<Claims>()?;
         Ok(TemplateService::find_user_favorites_template(db, claims.user_id).await?)
     }
 
     /// 通过ID获取模版详情
-    async fn template_by_id(&self, ctx: &Context<'_>, id: i32) -> Result<Option<Model>> {
+    async fn template_by_id(&self, ctx: &Context<'_>, id: i32) -> Result<Model> {
         let db = ctx.data::<DbConn>()?;
         Ok(TemplateService::find_by_id(db, id).await?)
+    }
+
+    async fn template_with_user(&self, ctx: &Context<'_>, id: i32) -> Result<TemplateWithUser> {
+        let db = ctx.data::<DbConn>()?;
+        let (template, user) = TemplateService::find_by_id_with_user(db, id).await?;
+        let favorite = FavoritesService::find_template_favorite_users(db, template.id).await?;
+        Ok(TemplateWithUser(
+            user,
+            template,
+            TemplateFavorites {
+                favorites: favorite,
+            },
+        ))
     }
 
     /// 需要权限
@@ -48,8 +73,8 @@ impl TemplateQuery {
     async fn template_download_count(&self, ctx: &Context<'_>, id: i32) -> Result<i32> {
         let coon = ctx.data::<MultiplexedConnection>()?;
         let mut redis = coon.clone();
-        let res: i32 = redis
-            .get(gen_key(crate::redis_keys::RedisKeys::TemplateDownloads, id))
+        let res = redis
+            .hget(RedisKeys::TemplateDownloads, id)
             .await
             .unwrap_or(0);
         Ok(res)
@@ -60,7 +85,7 @@ impl TemplateQuery {
         let coon = ctx.data::<MultiplexedConnection>()?;
         let mut redis = coon.clone();
         let res: i32 = redis
-            .get(gen_key(crate::redis_keys::RedisKeys::TemplateFavorites, id))
+            .hget(RedisKeys::TemplateFavorites, id)
             .await
             .unwrap_or(0);
         Ok(res)
