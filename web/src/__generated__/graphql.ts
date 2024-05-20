@@ -69,12 +69,15 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** 添加评论 */
   addComment: Scalars['Int']['output'];
+  /** 添加标签 */
+  addTag: Scalars['String']['output'];
   createCategory: Scalars['Int']['output'];
   createTag: Tag;
   createTemplate: Scalars['Int']['output'];
   deleteCategory: Scalars['String']['output'];
   /** 删除评论 */
   deleteComment: Scalars['String']['output'];
+  /** 添加标签 */
   deleteTag: Scalars['String']['output'];
   deleteTemplate: Scalars['String']['output'];
   disFavorite: Scalars['String']['output'];
@@ -88,6 +91,11 @@ export type Mutation = {
 
 export type MutationAddCommentArgs = {
   input: CommentInput;
+};
+
+
+export type MutationAddTagArgs = {
+  input: TemplateTagInput;
 };
 
 
@@ -117,7 +125,8 @@ export type MutationDeleteCommentArgs = {
 
 
 export type MutationDeleteTagArgs = {
-  id: Scalars['Int']['input'];
+  tagId: Scalars['Int']['input'];
+  templateId: Scalars['Int']['input'];
 };
 
 
@@ -158,11 +167,17 @@ export type MutationUpdateTemplateArgs = {
   input: TemplateUpdateInput;
 };
 
+export type Pagination = {
+  page: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   categories: Array<Category>;
   comments: Array<CommentWithUser>;
   favoriteTemplates: Array<Maybe<Template>>;
+  tags: Array<Tag>;
   /** 通过ID获取模版详情 */
   templateById: Template;
   /** 获取模版评论次数 */
@@ -172,11 +187,11 @@ export type Query = {
   /** 获取模版收藏次数 */
   templateFavoriteCount: Scalars['Int']['output'];
   templateWithUser: TemplateWithUser;
-  templates: Array<Template>;
   /** 需要权限 */
   templatesByUser: Array<Template>;
   /** 获取用户模版列表，不需要权限，但只能看到未公开的 */
   templatesByUserId: Array<Template>;
+  templatesWithPagination: TemplatesWithPagination;
   user: User;
   userById?: Maybe<User>;
 };
@@ -214,6 +229,12 @@ export type QueryTemplateWithUserArgs = {
 
 export type QueryTemplatesByUserIdArgs = {
   userId: Scalars['Int']['input'];
+};
+
+
+export type QueryTemplatesWithPaginationArgs = {
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
+  pagination?: InputMaybe<Pagination>;
 };
 
 
@@ -258,6 +279,11 @@ export type TemplateCreateInput = {
   userId: Scalars['Int']['input'];
 };
 
+export type TemplateTagInput = {
+  tagId: Scalars['Int']['input'];
+  templateId: Scalars['Int']['input'];
+};
+
 export type TemplateUpdateInput = {
   categoryId: Scalars['Int']['input'];
   config: Scalars['JSON']['input'];
@@ -270,6 +296,7 @@ export type TemplateUpdateInput = {
 export type TemplateWithUser = {
   __typename?: 'TemplateWithUser';
   avatarUrl: Scalars['String']['output'];
+  category: Category;
   categoryId: Scalars['Int']['output'];
   config: Scalars['String']['output'];
   createAt?: Maybe<Scalars['DateTime']['output']>;
@@ -279,10 +306,17 @@ export type TemplateWithUser = {
   name: Scalars['String']['output'];
   readme?: Maybe<Scalars['String']['output']>;
   sourceCodeUrl?: Maybe<Scalars['String']['output']>;
+  tags: Array<Tag>;
   template: Scalars['String']['output'];
   updateAt?: Maybe<Scalars['DateTime']['output']>;
   userId: Scalars['Int']['output'];
   username: Scalars['String']['output'];
+};
+
+export type TemplatesWithPagination = {
+  __typename?: 'TemplatesWithPagination';
+  templates: Array<Template>;
+  total: Scalars['Int']['output'];
 };
 
 export type User = {
@@ -319,24 +353,27 @@ export type TemplateQueryVariables = Exact<{
 }>;
 
 
-export type TemplateQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, username: string, avatarUrl: string } };
+export type TemplateQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, username: string, avatarUrl: string, category: { __typename?: 'Category', name: string }, tags: Array<{ __typename?: 'Tag', name: string }> } };
 
 export type UserFavoriteTemplateQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UserFavoriteTemplateQuery = { __typename?: 'Query', favoriteTemplates: Array<{ __typename?: 'Template', id: number } | null> };
 
-export type TemplatesQueryVariables = Exact<{ [key: string]: never; }>;
+export type DatesQueryVariables = Exact<{
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
+  pagination?: InputMaybe<Pagination>;
+}>;
 
 
-export type TemplatesQuery = { __typename?: 'Query', templates: Array<{ __typename?: 'Template', id: number }> };
+export type DatesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: number, name: string }>, tags: Array<{ __typename?: 'Tag', id: number, name: string }>, templatesWithPagination: { __typename?: 'TemplatesWithPagination', total: number, templates: Array<{ __typename?: 'Template', id: number }> } };
 
 export type TemplateAndReadmeQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type TemplateAndReadmeQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, readme?: string | null, template: string, username: string, avatarUrl: string, createAt?: any | null, updateAt?: any | null, sourceCodeUrl?: string | null, favorites: Array<{ __typename?: 'Favorites', userId: number }> } };
+export type TemplateAndReadmeQuery = { __typename?: 'Query', templateDownloadCount: number, templateFavoriteCount: number, templateCommentCount: number, templateWithUser: { __typename?: 'TemplateWithUser', name: string, config: string, readme?: string | null, template: string, username: string, avatarUrl: string, createAt?: any | null, updateAt?: any | null, sourceCodeUrl?: string | null, favorites: Array<{ __typename?: 'Favorites', userId: number }>, category: { __typename?: 'Category', name: string }, tags: Array<{ __typename?: 'Tag', name: string }> } };
 
 export type AddFavoriteMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -356,9 +393,9 @@ export type DisFavoriteMutation = { __typename?: 'Mutation', disFavorite: string
 export const DeleteCommentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteComment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteComment"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteCommentMutation, DeleteCommentMutationVariables>;
 export const AddCommentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addComment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CommentInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addComment"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}]}]}}]} as unknown as DocumentNode<AddCommentMutation, AddCommentMutationVariables>;
 export const QueryCommentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"QueryComments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"templateId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"comments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"templateId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"parentCommentId"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"templateId"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<QueryCommentsQuery, QueryCommentsQueryVariables>;
-export const TemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Template"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateQuery, TemplateQueryVariables>;
+export const TemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Template"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateQuery, TemplateQueryVariables>;
 export const UserFavoriteTemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UserFavoriteTemplate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"favoriteTemplates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UserFavoriteTemplateQuery, UserFavoriteTemplateQueryVariables>;
-export const TemplatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<TemplatesQuery, TemplatesQueryVariables>;
-export const TemplateAndReadmeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TemplateAndReadme"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"readme"}},{"kind":"Field","name":{"kind":"Name","value":"template"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"favorites"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}},{"kind":"Field","name":{"kind":"Name","value":"sourceCodeUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateAndReadmeQuery, TemplateAndReadmeQueryVariables>;
+export const DatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Dates"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"categoryId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"templatesWithPagination"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"categoryId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"categoryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<DatesQuery, DatesQueryVariables>;
+export const TemplateAndReadmeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TemplateAndReadme"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"templateWithUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"config"}},{"kind":"Field","name":{"kind":"Name","value":"readme"}},{"kind":"Field","name":{"kind":"Name","value":"template"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"favorites"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}},{"kind":"Field","name":{"kind":"Name","value":"sourceCodeUrl"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"templateDownloadCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateFavoriteCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]},{"kind":"Field","name":{"kind":"Name","value":"templateCommentCount"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<TemplateAndReadmeQuery, TemplateAndReadmeQueryVariables>;
 export const AddFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"favorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"templateId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<AddFavoriteMutation, AddFavoriteMutationVariables>;
 export const DisFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"disFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disFavorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"templateId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DisFavoriteMutation, DisFavoriteMutationVariables>;

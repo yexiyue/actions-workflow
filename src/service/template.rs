@@ -1,7 +1,7 @@
 use crate::entity::prelude::Favorites;
-use crate::entity::prelude::Template;
+use crate::entity::prelude::{Category, Template};
 use crate::entity::template::{ActiveModel, Column, Model};
-use crate::entity::user;
+use crate::entity::{category, user};
 use crate::service::user::UserService;
 use anyhow::Result;
 use async_graphql::InputObject;
@@ -37,6 +37,12 @@ impl IntoActiveModel<ActiveModel> for TemplateCreateInput {
     }
 }
 
+#[derive(Debug, Serialize, InputObject, Deserialize)]
+pub struct Pagination {
+    page_size: u64,
+    page: u64,
+}
+
 #[derive(Debug, Serialize, Deserialize, InputObject)]
 pub struct TemplateUpdateInput {
     pub name: String,
@@ -69,9 +75,23 @@ impl TemplateService {
         Ok(())
     }
 
-    pub async fn find_all(db: &DbConn) -> Result<Vec<Model>> {
-        let res = Template::find().all(db).await?;
-        Ok(res)
+    pub async fn find_all(
+        db: &DbConn,
+        category_id: Option<i32>,
+        pagination: Option<Pagination>,
+    ) -> Result<(Vec<Model>, u64)> {
+        let mut select = Template::find();
+        if let Some(category_id) = category_id {
+            select = select.filter(Column::CategoryId.eq(category_id));
+        }
+        let count = select.clone().count(db).await?;
+        let res = if let Some(Pagination { page_size, page }) = pagination {
+            select.paginate(db, page_size).fetch_page(page).await?
+        } else {
+            select.all(db).await?
+        };
+
+        Ok((res, count))
     }
 
     pub async fn find_all_by_user_id(
@@ -95,13 +115,21 @@ impl TemplateService {
         Ok(res)
     }
 
-    pub async fn find_by_id_with_user(db: &DbConn, id: i32) -> Result<(Model, user::Model)> {
+    pub async fn find_by_id_with_user(
+        db: &DbConn,
+        id: i32,
+    ) -> Result<(Model, user::Model, category::Model)> {
         let res = Template::find_by_id(id)
             .one(db)
             .await?
             .ok_or(DbErr::RecordNotFound("Template not found".into()))?;
         let user = UserService::find_by_id(db, res.user_id).await?.unwrap();
-        Ok((res, user))
+        let category = res
+            .find_related(Category)
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound("Template not found".into()))?;
+        Ok((res, user, category))
     }
 
     pub async fn update_by_id(db: &DbConn, id: i32, model: TemplateUpdateInput) -> Result<Model> {

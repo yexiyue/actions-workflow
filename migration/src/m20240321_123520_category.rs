@@ -1,5 +1,4 @@
 use sea_orm_migration::prelude::*;
-
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -22,7 +21,22 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Category::Description).string().not_null())
                     .to_owned(),
             )
-            .await
+            .await?;
+        let data: serde_json::Value =
+            serde_json::from_str(include_str!("../category.json")).unwrap();
+
+        let data = data.as_array().unwrap();
+        for i in data {
+            let name = i.get("name").unwrap().as_str().unwrap();
+            let insert = Query::insert()
+                .into_table(Category::Table)
+                .columns([Category::Name, Category::Description])
+                .values_panic([name.into(), name.into()])
+                .to_owned();
+            manager.exec_stmt(insert).await?;
+        }
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {

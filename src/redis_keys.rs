@@ -6,7 +6,6 @@ use redis::ToRedisArgs;
 pub enum RedisKeys {
     UserToken,
     TemplateDownloads,
-    TemplateFavorites,
 }
 
 impl ToRedisArgs for RedisKeys {
@@ -23,7 +22,6 @@ impl Display for RedisKeys {
         match self {
             RedisKeys::UserToken => write!(f, "user_token"),
             RedisKeys::TemplateDownloads => write!(f, "template_downloads"),
-            RedisKeys::TemplateFavorites => write!(f, "template_favorites"),
         }
     }
 }

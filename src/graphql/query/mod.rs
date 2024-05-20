@@ -8,6 +8,13 @@ use template::TemplateQuery;
 use user::UserQuery;
 mod comments;
 use comments::CommentQuery;
+use tag::TagQuery;
 
 #[derive(Debug, MergedObject, Default)]
-pub struct Query(UserQuery, CategoryQuery, TemplateQuery, CommentQuery);
+pub struct Query(
+    UserQuery,
+    CategoryQuery,
+    TagQuery,
+    TemplateQuery,
+    CommentQuery,
+);

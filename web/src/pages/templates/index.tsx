@@ -1,4 +1,6 @@
 import { gql } from "@/__generated__";
+import tagMapColor from "@/assets/tagMapColor.json";
+import { Comments } from "@/components/Comments";
 import { useTime } from "@/hooks/useTime";
 import { useUserStore } from "@/stores/useUserStore";
 import {
@@ -13,12 +15,14 @@ import {
   App,
   Avatar,
   Button,
+  Divider,
   Drawer,
   Empty,
   Space,
   Statistic,
   Tabs,
   TabsProps,
+  Tag,
   Tooltip,
   Typography,
 } from "antd";
@@ -30,8 +34,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import styles from "./index.module.less";
-import { Comments } from "@/components/Comments";
-import ScrollBar from "react-perfect-scrollbar";
 
 const query = gql(`
 query TemplateAndReadme($id:Int!){
@@ -48,6 +50,12 @@ query TemplateAndReadme($id:Int!){
     createAt
     updateAt
     sourceCodeUrl
+    category{
+      name
+    }
+    tags{
+      name
+    }
   }
   templateDownloadCount(id: $id)
   templateFavoriteCount(id: $id)
@@ -165,7 +173,7 @@ export const Component = () => {
     },
   ];
   return (
-    <div className="w-full h-[90%] overflow-auto relative">
+    <div className="w-full h-[calc(100%-56px)] overflow-auto relative">
       <PrefectScrollbar>
         <div className="w-[80px] h-[300px]  fixed top-[200px] left-6 flex flex-col gap-4 justify-center">
           <Tooltip title={t`返回`} placement="right">
@@ -213,6 +221,15 @@ export const Component = () => {
             <Typography.Paragraph className="mt-4">
               {config?.description}
             </Typography.Paragraph>
+            <Space className="my-2">
+              <Typography.Text type="secondary">
+                {data?.templateWithUser.category.name}
+              </Typography.Text>
+              <Divider type="vertical" />
+              {data?.templateWithUser.tags?.map((item) => (
+                <Tag color={(tagMapColor as any)[item.name]}>{item.name}</Tag>
+              ))}
+            </Space>
             <div className="flex gap-6">
               <Statistic
                 className={styles.statistic}

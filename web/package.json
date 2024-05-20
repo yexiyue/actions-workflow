@@ -10,6 +10,7 @@
     "w": "graphql-codegen -w"
   },
   "dependencies": {
+    "@ahooksjs/use-url-state": "^3.5.1",
     "@ant-design/cssinjs": "^1.20.0",
     "@ant-design/icons": "^5.3.7",
     "@apollo/client": "^3.10.4",

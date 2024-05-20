@@ -1,0 +1,254 @@
+[
+  {
+    "name": "React"
+  },
+  {
+    "name": "Vue.js"
+  },
+  {
+    "name": "Angular"
+  },
+  {
+    "name": "Svelte"
+  },
+  {
+    "name": "Webpack"
+  },
+  {
+    "name": "Babel"
+  },
+  {
+    "name": "jQuery"
+  },
+  {
+    "name": "Tailwind CSS"
+  },
+  {
+    "name": "Bootstrap"
+  },
+  {
+    "name": "Node.js"
+  },
+  {
+    "name": "Express"
+  },
+  {
+    "name": "Django"
+  },
+  {
+    "name": "Flask"
+  },
+  {
+    "name": "Ruby on Rails"
+  },
+  {
+    "name": "ASP.NET"
+  },
+  {
+    "name": "Spring"
+  },
+  {
+    "name": "Hibernate"
+  },
+  {
+    "name": "PostgreSQL"
+  },
+  {
+    "name": "Swift"
+  },
+  {
+    "name": "Kotlin"
+  },
+  {
+    "name": "React Native"
+  },
+  {
+    "name": "Flutter"
+  },
+  {
+    "name": "Xamarin"
+  },
+  {
+    "name": "Android Studio"
+  },
+  {
+    "name": "iOS"
+  },
+  {
+    "name": "Appcelerator"
+  },
+  {
+    "name": "Electron"
+  },
+  {
+    "name": ".NET Framework"
+  },
+  {
+    "name": "Qt"
+  },
+  {
+    "name": "JavaFX"
+  },
+  {
+    "name": "C++/Qt"
+  },
+  {
+    "name": "Windows Forms"
+  },
+  {
+    "name": "Unity"
+  },
+  {
+    "name": "Unreal Engine"
+  },
+  {
+    "name": "Godot"
+  },
+  {
+    "name": "GameMaker"
+  },
+  {
+    "name": "CryEngine"
+  },
+  {
+    "name": "Python"
+  },
+  {
+    "name": "R"
+  },
+  {
+    "name": "Jupyter"
+  },
+  {
+    "name": "Pandas"
+  },
+  {
+    "name": "NumPy"
+  },
+  {
+    "name": "SciPy"
+  },
+  {
+    "name": "TensorFlow"
+  },
+  {
+    "name": "Scikit-learn"
+  },
+  {
+    "name": "Keras"
+  },
+  {
+    "name": "PyTorch"
+  },
+  {
+    "name": "Scikit-learn"
+  },
+  {
+    "name": "OpenCV"
+  },
+  {
+    "name": "XGBoost"
+  },
+  {
+    "name": "AI"
+  },
+  {
+    "name": "Natural Language Processing (NLP)"
+  },
+  {
+    "name": "Computer Vision"
+  },
+  {
+    "name": "Deep Learning"
+  },
+  {
+    "name": "GANs (Generative Adversarial Networks)"
+  },
+  {
+    "name": "AWS (Amazon Web Services)"
+  },
+  {
+    "name": "Azure"
+  },
+  {
+    "name": "Google Cloud Platform (GCP)"
+  },
+  {
+    "name": "Docker"
+  },
+  {
+    "name": "Kubernetes"
+  },
+  {
+    "name": "OpenStack"
+  },
+  {
+    "name": "MQTT"
+  },
+  {
+    "name": "Node-RED"
+  },
+  {
+    "name": "Home Assistant"
+  },
+  {
+    "name": "OpenHAB"
+  },
+  {
+    "name": "AWS IoT"
+  },
+  {
+    "name": "Ethereum"
+  },
+  {
+    "name": "Solidity"
+  },
+  {
+    "name": "Hyperledger"
+  },
+  {
+    "name": "Bitcoin"
+  },
+  {
+    "name": "Smart Contracts"
+  },
+  {
+    "name": "Microservices"
+  },
+  {
+    "name": "Serverless"
+  },
+  {
+    "name": "RESTful API"
+  },
+  {
+    "name": "GraphQL"
+  },
+  {
+    "name": "Apache Kafka"
+  },
+  {
+    "name": "RabbitMQ"
+  },
+  {
+    "name": "MySQL"
+  },
+  {
+    "name": "MongoDB"
+  },
+  {
+    "name": "Cassandra"
+  },
+  {
+    "name": "Redis"
+  },
+  {
+    "name": "Elasticsearch"
+  },
+  {
+    "name": "SQL"
+  },
+  {
+    "name": "NoSQL"
+  }
+]

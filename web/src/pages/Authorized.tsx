@@ -10,7 +10,6 @@ import { useUserStore } from "@/stores/useUserStore";
 export const Component = () => {
   useLingui();
   const navigate = useNavigate();
-  console.log(history);
   const [setUser] = useUserStore((store) => [store.setUser]);
   const { message } = App.useApp();
   const [params] = useSearchParams();

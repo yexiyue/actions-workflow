@@ -47,4 +47,9 @@ impl FavoritesService {
         let template = TemplateService::find_by_id(db, template_id).await?;
         Ok(template.find_related(Favorites).all(db).await?)
     }
+
+    pub async fn find_template_favorite_users_count(db: &DbConn, template_id: i32) -> Result<u64> {
+        let template = TemplateService::find_by_id(db, template_id).await?;
+        Ok(template.find_related(Favorites).count(db).await?)
+    }
 }

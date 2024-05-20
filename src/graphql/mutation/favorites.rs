@@ -1,11 +1,9 @@
 use crate::{
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::RedisKeys,
     service::favorites::{FavoritesInput, FavoritesService},
 };
 use async_graphql::{Context, Object, Result};
-use redis::{aio::MultiplexedConnection, AsyncCommands};
 
 #[derive(Debug, Default)]
 pub struct FavoritesMutation;
@@ -25,12 +23,6 @@ impl FavoritesMutation {
         )
         .await?;
 
-        let coon = ctx.data::<MultiplexedConnection>()?;
-        let mut redis = coon.clone();
-        redis
-            .hincr(RedisKeys::TemplateFavorites, template_id, 1)
-            .await?;
-
         Ok("success")
     }
 
@@ -46,15 +38,6 @@ impl FavoritesMutation {
             },
         )
         .await?;
-
-        let coon = ctx.data::<MultiplexedConnection>()?;
-        let mut redis = coon.clone();
-        redis::cmd("hincrby")
-            .arg(RedisKeys::TemplateFavorites)
-            .arg(template_id)
-            .arg(-1)
-            .query_async(&mut redis)
-            .await?;
 
         Ok("success")
     }

@@ -1,9 +1,13 @@
 use crate::{
-    entity::{favorites, template::Model, user},
+    entity::{category, favorites, tag, template::Model, user},
     graphql::AuthGuard,
     jwt::Claims,
     redis_keys::RedisKeys,
-    service::{favorites::FavoritesService, template::TemplateService},
+    service::{
+        favorites::FavoritesService,
+        template::{Pagination, TemplateService},
+        template_tag::TemplateTagService,
+    },
 };
 use async_graphql::{Context, MergedObject, Object, Result, SimpleObject};
 use redis::{aio::MultiplexedConnection, AsyncCommands};
@@ -14,19 +18,46 @@ use serde::Serialize;
 pub struct TemplateQuery;
 
 #[derive(Debug, Serialize, MergedObject)]
-pub struct TemplateWithUser(user::Model, Model, TemplateFavorites);
+pub struct TemplateWithUser(
+    user::Model,
+    Model,
+    TemplateFavorites,
+    TemplateCategory,
+    TemplateTags,
+);
 
 #[derive(Debug, SimpleObject, Serialize)]
 pub struct TemplateFavorites {
     pub favorites: Vec<favorites::Model>,
 }
 
+#[derive(Debug, SimpleObject, Serialize)]
+pub struct TemplateCategory {
+    pub category: category::Model,
+}
+
+#[derive(Debug, SimpleObject, Serialize)]
+pub struct TemplateTags {
+    pub tags: Vec<tag::Model>,
+}
+
+#[derive(Debug, SimpleObject, Serialize)]
+pub struct TemplatesWithPagination {
+    templates: Vec<Model>,
+    total: u64,
+}
+
 #[Object]
 impl TemplateQuery {
-    async fn templates(&self, ctx: &Context<'_>) -> Result<Vec<Model>> {
+    async fn templates_with_pagination(
+        &self,
+        ctx: &Context<'_>,
+        category_id: Option<i32>,
+        pagination: Option<Pagination>,
+    ) -> Result<TemplatesWithPagination> {
         let db = ctx.data::<DbConn>()?;
-        let res = TemplateService::find_all(db).await?;
-        Ok(res)
+        let (templates, total) = TemplateService::find_all(db, category_id, pagination).await?;
+        Ok(TemplatesWithPagination { templates, total })
     }
 
     #[graphql(guard = "AuthGuard")]
@@ -44,14 +75,15 @@ impl TemplateQuery {
 
     async fn template_with_user(&self, ctx: &Context<'_>, id: i32) -> Result<TemplateWithUser> {
         let db = ctx.data::<DbConn>()?;
-        let (template, user) = TemplateService::find_by_id_with_user(db, id).await?;
-        let favorite = FavoritesService::find_template_favorite_users(db, template.id).await?;
+        let (template, user, category) = TemplateService::find_by_id_with_user(db, id).await?;
+        let favorites = FavoritesService::find_template_favorite_users(db, template.id).await?;
+        let tags = TemplateTagService::find_tags_for_template(db, template.id).await?;
         Ok(TemplateWithUser(
             user,
             template,
-            TemplateFavorites {
-                favorites: favorite,
-            },
+            TemplateFavorites { favorites },
+            TemplateCategory { category },
+            TemplateTags { tags },
         ))
     }
 
@@ -81,13 +113,8 @@ impl TemplateQuery {
     }
 
     /// 获取模版收藏次数
-    async fn template_favorite_count(&self, ctx: &Context<'_>, id: i32) -> Result<i32> {
-        let coon = ctx.data::<MultiplexedConnection>()?;
-        let mut redis = coon.clone();
-        let res: i32 = redis
-            .hget(RedisKeys::TemplateFavorites, id)
-            .await
-            .unwrap_or(0);
-        Ok(res)
+    async fn template_favorite_count(&self, ctx: &Context<'_>, id: i32) -> Result<u64> {
+        let db = ctx.data::<DbConn>()?;
+        Ok(FavoritesService::find_template_favorite_users_count(db, id).await?)
     }
 }
