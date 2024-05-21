@@ -16,9 +16,10 @@ pub struct TemplateCreateInput {
     pub config: serde_json::Value,
     pub template: String,
     pub user_id: i32,
-    pub category_id: Option<i32>,
+    pub category_id: i32,
     pub readme: Option<String>,
     pub source_code_url: Option<String>,
+    pub is_public: bool,
 }
 
 impl IntoActiveModel<ActiveModel> for TemplateCreateInput {
@@ -28,10 +29,10 @@ impl IntoActiveModel<ActiveModel> for TemplateCreateInput {
             config: Set(self.config.to_string()),
             template: Set(self.template),
             user_id: Set(self.user_id),
-            category_id: Set(self.category_id.unwrap_or(1)),
+            category_id: Set(self.category_id),
             readme: Set(self.readme),
             source_code_url: Set(self.source_code_url),
-            is_public: Set(false),
+            is_public: Set(self.is_public),
             ..Default::default()
         }
     }

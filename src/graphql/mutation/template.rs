@@ -51,7 +51,11 @@ impl TemplateMutation {
 
     /// 添加标签
     #[graphql(guard = "AuthGuard")]
-    async fn add_tag(&self, ctx: &Context<'_>, input: TemplateTagInput) -> Result<&'static str> {
+    async fn update_tags(
+        &self,
+        ctx: &Context<'_>,
+        input: TemplateTagInput,
+    ) -> Result<&'static str> {
         let db = ctx.data::<DbConn>()?;
         let claims = ctx.data::<Claims>()?;
         let template = TemplateService::find_by_id(db, input.template_id).await?;
@@ -59,24 +63,6 @@ impl TemplateMutation {
             return Err(async_graphql::Error::new("not your template"));
         }
         TemplateTagService::create(db, input).await?;
-        Ok("ok")
-    }
-
-    /// 添加标签
-    #[graphql(guard = "AuthGuard")]
-    async fn delete_tag(
-        &self,
-        ctx: &Context<'_>,
-        tag_id: i32,
-        template_id: i32,
-    ) -> Result<&'static str> {
-        let db = ctx.data::<DbConn>()?;
-        let claims = ctx.data::<Claims>()?;
-        let template = TemplateService::find_by_id(db, template_id).await?;
-        if template.user_id != claims.user_id {
-            return Err(async_graphql::Error::new("not your template"));
-        }
-        TemplateTagService::delete_by_id(db, tag_id).await?;
         Ok("ok")
     }
 }
