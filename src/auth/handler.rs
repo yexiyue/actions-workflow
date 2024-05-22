@@ -1,11 +1,5 @@
 use super::OAuth;
-use crate::{
-    error::AppError,
-    jwt::Claims,
-    redis_keys::{gen_key, RedisKeys},
-    service::user::UserService,
-    AppState,
-};
+use crate::{error::AppError, jwt::Claims, service::user::UserService, AppState};
 use anyhow::{Context, Result};
 use axum::{
     extract::State,
@@ -15,7 +9,6 @@ use axum::{
 };
 use axum_extra::extract::cookie::{Cookie, PrivateCookieJar, SameSite};
 use oauth2::TokenResponse;
-use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -40,25 +33,12 @@ pub async fn authorized(
         req,
         coon,
         secret_store,
-        ref mut redis,
         ..
     }): State<AppState>,
     header: HeaderMap,
     oauth: OAuth,
     Json(AuthorizedParams { code, .. }): Json<AuthorizedParams>,
 ) -> Result<impl IntoResponse, AppError> {
-    // let csrf = jar
-    //     .get("csrf_token")
-    //     .ok_or(AppError::format_err_code(StatusCode::BAD_REQUEST)(anyhow!(
-    //         "csrf token not found"
-    //     )))?;
-
-    // if state != csrf.value() {
-    //     return Err(AppError(
-    //         StatusCode::BAD_REQUEST,
-    //         anyhow!("state does not match"),
-    //     ));
-    // }
     let user_agent = header.get(header::USER_AGENT).unwrap();
     // 交换获取access_token
     let res = oauth.exchange_code(code).await?;
@@ -98,15 +78,6 @@ pub async fn authorized(
         .get("JWT_SECRET")
         .with_context(|| "get jwt secret error")?;
 
-    redis
-        .hset_multiple(
-            gen_key(RedisKeys::UserToken, user_id),
-            &[
-                ("access_token", access_token),
-                ("refresh_token", refresh_token),
-            ],
-        )
-        .await?;
     // 生成jwt token
     let token = Claims::new(user_id as i32).encode(&jwt_secret)?;
 
@@ -114,26 +85,25 @@ pub async fn authorized(
         "token":token,
         "user":user,
         "access_token":access_token,
+        "refresh_token":refresh_token,
     })))
 }
 
-pub async fn refresh(
-    claims: Claims,
-    State(AppState {
-        secret_store,
-        ref mut redis,
-        ..
-    }): State<AppState>,
-    oauth: OAuth,
-) -> Result<impl IntoResponse, AppError> {
-    let r_token: String = redis
-        .hget(
-            gen_key(RedisKeys::UserToken, claims.user_id),
-            "refresh_token",
-        )
-        .await?;
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RefreshArgs {
+    pub id: i32,
+    pub refresh_token: String,
+}
 
-    let res = oauth.refresh_token(r_token).await?;
+pub async fn refresh(
+    State(AppState { secret_store, .. }): State<AppState>,
+    oauth: OAuth,
+    Json(RefreshArgs {
+        refresh_token: token,
+        id,
+    }): Json<RefreshArgs>,
+) -> Result<impl IntoResponse, AppError> {
+    let res = oauth.refresh_token(token).await?;
     let access_token = res.access_token().secret();
     let refresh_token = res
         .refresh_token()
@@ -145,19 +115,11 @@ pub async fn refresh(
         .get("JWT_SECRET")
         .with_context(|| "get jwt secret error")?;
 
-    redis
-        .hset_multiple(
-            gen_key(RedisKeys::UserToken, claims.user_id),
-            &[
-                ("access_token", access_token),
-                ("refresh_token", refresh_token),
-            ],
-        )
-        .await?;
-
-    let token = Claims::new(claims.user_id).encode(&jwt_secret)?;
+    let token = Claims::new(id).encode(&jwt_secret)?;
 
     Ok(Json(json!({
         "token":token,
+        "access_token":access_token,
+        "refresh_token":refresh_token,
     })))
 }

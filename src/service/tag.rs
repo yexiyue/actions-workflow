@@ -20,6 +20,14 @@ impl TagService {
         })
     }
 
+    pub async fn find_by_id(db: &DbConn, id: i32) -> Result<Model> {
+        let res = Tag::find_by_id(id)
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound("tag not found".into()))?;
+        Ok(res)
+    }
+
     pub async fn delete_by_id(db: &DbConn, id: i32) -> Result<()> {
         let active_model = Tag::find_by_id(id)
             .one(db)

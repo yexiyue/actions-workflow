@@ -44,6 +44,10 @@ export const Component = () => {
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
       }
+      if (data.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("id", data.user.id);
+      }
       send();
     }
   }, [data]);
@@ -70,7 +74,7 @@ export const Component = () => {
                 if (history.length > 2) {
                   navigate(-2);
                 } else {
-                  navigate("/");
+                  navigate("/", { replace: true });
                 }
               }}
             >

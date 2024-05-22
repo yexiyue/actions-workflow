@@ -29,8 +29,26 @@ export const Header = () => {
 
   return (
     <div className="h-14  flex justify-between items-center px-8 border-b">
-      <p className=" text-xl">Cargo Actions</p>
+      <p
+        className=" text-xl cursor-pointer"
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Cargo Actions
+      </p>
       <div className="flex gap-2 items-center">
+        {user && (
+          <Button
+            type="primary"
+            onClick={() => {
+              navigate("/user-center");
+            }}
+          >
+            <Trans>个人中心</Trans>
+          </Button>
+        )}
+
         <Tooltip title={<Trans>切换语言</Trans>} placement="bottom">
           <Button
             type="text"
@@ -61,7 +79,11 @@ export const Header = () => {
               type="text"
               icon={<GithubOutlined />}
               onClick={() => navigate("/login")}
-            ></Button>
+            >
+              <>
+                <Trans>登陆</Trans>
+              </>
+            </Button>
           </Tooltip>
         )}
       </div>

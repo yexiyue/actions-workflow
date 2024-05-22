@@ -23,7 +23,8 @@ pub struct Claims {
 
 impl Claims {
     pub fn new(user_id: i32) -> Self {
-        let exp = chrono::Utc::now().timestamp() + 25200;
+        // 8小时过期时间
+        let exp = chrono::Utc::now().timestamp() + 28800;
         Self { exp, user_id }
     }
 

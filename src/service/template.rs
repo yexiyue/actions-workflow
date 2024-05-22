@@ -8,6 +8,8 @@ use async_graphql::InputObject;
 use sea_orm::*;
 use serde::{Deserialize, Serialize};
 
+use super::Pagination;
+
 pub struct TemplateService;
 
 #[derive(Debug, Serialize, Deserialize, InputObject)]
@@ -36,12 +38,6 @@ impl IntoActiveModel<ActiveModel> for TemplateCreateInput {
             ..Default::default()
         }
     }
-}
-
-#[derive(Debug, Serialize, InputObject, Deserialize)]
-pub struct Pagination {
-    page_size: u64,
-    page: u64,
 }
 
 #[derive(Debug, Serialize, Deserialize, InputObject)]
@@ -80,11 +76,23 @@ impl TemplateService {
         db: &DbConn,
         category_id: Option<i32>,
         pagination: Option<Pagination>,
+        search: Option<String>,
+        is_public: Option<bool>,
     ) -> Result<(Vec<Model>, u64)> {
         let mut select = Template::find();
+
         if let Some(category_id) = category_id {
             select = select.filter(Column::CategoryId.eq(category_id));
         }
+
+        if let Some(search) = search {
+            select = select.filter(Column::Name.like(format!("%{}%", search)));
+        }
+
+        if let Some(is_public) = is_public {
+            select = select.filter(Column::IsPublic.eq(is_public));
+        }
+
         let count = select.clone().count(db).await?;
         let res = if let Some(Pagination { page_size, page }) = pagination {
             select.paginate(db, page_size).fetch_page(page).await?
@@ -98,14 +106,30 @@ impl TemplateService {
     pub async fn find_all_by_user_id(
         db: &DbConn,
         user_id: i32,
+        pagination: Option<Pagination>,
+        search: Option<String>,
         is_public: Option<bool>,
-    ) -> Result<Vec<Model>> {
+    ) -> Result<(u64, u64, Vec<Model>)> {
         let mut select = Template::find().filter(Column::UserId.eq(user_id));
-        if is_public.is_some() {
-            select = select.filter(Column::IsPublic.eq(is_public.unwrap()));
+
+        if let Some(is_public) = is_public {
+            select = select.filter(Column::IsPublic.eq(is_public));
         }
-        let res = select.all(db).await?;
-        Ok(res)
+
+        let all_count = select.clone().count(db).await?;
+
+        if let Some(search) = search {
+            select = select.filter(Column::Name.like(format!("%{}%", search)));
+        }
+
+        let count = select.clone().count(db).await?;
+        let res = if let Some(Pagination { page_size, page }) = pagination {
+            select.paginate(db, page_size).fetch_page(page).await?
+        } else {
+            select.all(db).await?
+        };
+
+        Ok((all_count, count, res))
     }
 
     pub async fn find_by_id(db: &DbConn, id: i32) -> Result<Model> {

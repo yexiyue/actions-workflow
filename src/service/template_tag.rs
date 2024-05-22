@@ -1,12 +1,14 @@
-use crate::entity::prelude::{Tag, TemplateTag};
+use crate::entity::prelude::{Tag, Template, TemplateTag};
 use crate::entity::{
-    tag,
+    tag, template,
     template_tag::{ActiveModel, Column},
 };
 use anyhow::Result;
 use async_graphql::InputObject;
 use sea_orm::*;
 use serde::Serialize;
+
+use super::Pagination;
 
 pub struct TemplateTagService;
 
@@ -46,12 +48,40 @@ impl TemplateTagService {
             .find_also_related(Tag)
             .all(db)
             .await?;
-        let mut res = vec![];
-        for i in template_tags {
-            if let Some(tag) = i.1 {
-                res.push(tag);
-            }
-        }
+        let res = template_tags
+            .into_iter()
+            .filter_map(|(_, tag)| tag)
+            .collect();
         Ok(res)
+    }
+
+    pub async fn find_tag_templates(
+        db: &DbConn,
+        tag_id: i32,
+        pagination: Option<Pagination>,
+        search: Option<String>,
+    ) -> Result<(u64, u64, Vec<template::Model>)> {
+        let mut select = TemplateTag::find()
+            .filter(Column::TagId.eq(tag_id))
+            .find_also_related(Template)
+            .filter(template::Column::IsPublic.eq(true));
+        let all_count = select.clone().count(db).await?;
+        if let Some(search) = search {
+            select = select.filter(template::Column::Name.like(format!("%{}%", search)))
+        }
+
+        let count = select.clone().count(db).await?;
+        let tag_templates = if let Some(Pagination { page_size, page }) = pagination {
+            select.paginate(db, page_size).fetch_page(page).await?
+        } else {
+            select.all(db).await?
+        };
+
+        let res = tag_templates
+            .into_iter()
+            .filter_map(|(_, template)| template)
+            .collect();
+
+        Ok((all_count, count, res))
     }
 }

@@ -10,7 +10,7 @@ pub struct AdminGuard;
 impl Guard for AdminGuard {
     async fn check(&self, ctx: &async_graphql::Context<'_>) -> Result<()> {
         let claims = ctx.data_opt::<Claims>();
-        // tracing::info!("claims: {:?}", claims);
+
         if claims.is_none() {
             return Err(AppError(StatusCode::UNAUTHORIZED, anyhow!("Unauthorized")).extend());
         } else if claims.unwrap().user_id != 72074435 {

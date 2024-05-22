@@ -4,9 +4,8 @@ use crate::{
     jwt::Claims,
     redis_keys::RedisKeys,
     service::{
-        favorites::FavoritesService,
-        template::{Pagination, TemplateService},
-        template_tag::TemplateTagService,
+        favorites::FavoritesService, template::TemplateService, template_tag::TemplateTagService,
+        Pagination,
     },
 };
 use async_graphql::{Context, MergedObject, Object, Result, SimpleObject};
@@ -47,16 +46,26 @@ pub struct TemplatesWithPagination {
     total: u64,
 }
 
+#[derive(Debug, SimpleObject, Serialize)]
+pub struct UserTemplatesAllCount {
+    all_count: u64,
+}
+
+#[derive(Debug, Serialize, MergedObject)]
+pub struct UserTemplates(TemplatesWithPagination, UserTemplatesAllCount);
 #[Object]
 impl TemplateQuery {
+    /// 分页查找模版
     async fn templates_with_pagination(
         &self,
         ctx: &Context<'_>,
         category_id: Option<i32>,
         pagination: Option<Pagination>,
+        search: Option<String>,
     ) -> Result<TemplatesWithPagination> {
         let db = ctx.data::<DbConn>()?;
-        let (templates, total) = TemplateService::find_all(db, category_id, pagination).await?;
+        let (templates, total) =
+            TemplateService::find_all(db, category_id, pagination, search, Some(true)).await?;
         Ok(TemplatesWithPagination { templates, total })
     }
 
@@ -89,16 +98,39 @@ impl TemplateQuery {
 
     /// 需要权限
     #[graphql(guard = "AuthGuard")]
-    async fn templates_by_user(&self, ctx: &Context<'_>) -> Result<Vec<Model>> {
+    async fn templates_by_user(
+        &self,
+        ctx: &Context<'_>,
+        pagination: Option<Pagination>,
+        search: Option<String>,
+    ) -> Result<UserTemplates> {
         let db = ctx.data::<DbConn>()?;
         let claims = ctx.data::<Claims>()?;
-        Ok(TemplateService::find_all_by_user_id(db, claims.user_id, None).await?)
+        let (all_count, total, templates) =
+            TemplateService::find_all_by_user_id(db, claims.user_id, pagination, search, None)
+                .await?;
+        Ok(UserTemplates(
+            TemplatesWithPagination { templates, total },
+            UserTemplatesAllCount { all_count },
+        ))
     }
 
     /// 获取用户模版列表，不需要权限，但只能看到未公开的
-    async fn templates_by_user_id(&self, ctx: &Context<'_>, user_id: i32) -> Result<Vec<Model>> {
+    async fn templates_by_user_id(
+        &self,
+        ctx: &Context<'_>,
+        user_id: i32,
+        pagination: Option<Pagination>,
+        search: Option<String>,
+    ) -> Result<UserTemplates> {
         let db = ctx.data::<DbConn>()?;
-        Ok(TemplateService::find_all_by_user_id(db, user_id, Some(true)).await?)
+        let (all_count, total, templates) =
+            TemplateService::find_all_by_user_id(db, user_id, pagination, search, Some(true))
+                .await?;
+        Ok(UserTemplates(
+            TemplatesWithPagination { templates, total },
+            UserTemplatesAllCount { all_count },
+        ))
     }
 
     /// 获取模版下载次数

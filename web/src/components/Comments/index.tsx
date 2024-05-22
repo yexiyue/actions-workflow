@@ -2,7 +2,7 @@ import { gql } from "@/__generated__";
 import { CommentWithUser } from "@/__generated__/graphql";
 import { useMutation, useQuery } from "@apollo/client";
 import { t } from "@lingui/macro";
-import { App, Divider } from "antd";
+import { App } from "antd";
 import { useMemo } from "react";
 import { CommentIem } from "./CommentIem";
 import { CommentInput } from "./CommentInput";
@@ -114,7 +114,7 @@ export const Comments = (props: CommentsInputProps) => {
           }
         }}
       />
-      <Divider />
+
       {mapCommentTree(commentsData)}
     </>
   );

@@ -3,7 +3,6 @@ import tagMapColor from "@/assets/tagMapColor.json";
 import {
   CommentOutlined,
   DownloadOutlined,
-  HeartFilled,
   HeartOutlined,
 } from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
@@ -14,6 +13,7 @@ import { useNavigate } from "react-router";
 const query = gql(`
   query Template($id:Int!){
       templateWithUser(id: $id){
+        userId
         name
         config
         username,
@@ -22,6 +22,7 @@ const query = gql(`
           name
         }
         tags{
+          id
           name
         }
       }
@@ -31,37 +32,17 @@ const query = gql(`
   }
 `);
 
-export const USER_FAVORITES_TEMPLATE = gql(`
-query UserFavoriteTemplate{
-  favoriteTemplates{
-    id,
-  }
-}
-`);
-
 type TemplateCardProps = {
   id: number;
 };
 export const TemplateCard = ({ id }: TemplateCardProps) => {
   const { data } = useQuery(query, { variables: { id } });
-  const { data: favoriteData } = useQuery(USER_FAVORITES_TEMPLATE);
+
   const config = useMemo(() => {
     if (data) {
       return JSON.parse(JSON.parse(data?.templateWithUser?.config ?? "{}"));
     }
   }, [data]);
-
-  const userFavoriteIds = useMemo(() => {
-    if (favoriteData) {
-      return new Set<number>(
-        favoriteData.favoriteTemplates
-          .filter((item) => item != null)
-          .map((item) => item!.id)
-      );
-    } else {
-      return new Set<number>();
-    }
-  }, [favoriteData]);
 
   const navigate = useNavigate();
 
@@ -73,15 +54,7 @@ export const TemplateCard = ({ id }: TemplateCardProps) => {
           <DownloadOutlined /> {data?.templateDownloadCount}
         </Typography.Text>,
         <Typography.Text type="secondary">
-          {userFavoriteIds.has(id) ? (
-            <HeartFilled
-              style={{
-                color: "#ff2442",
-              }}
-            />
-          ) : (
-            <HeartOutlined />
-          )}{" "}
+          <HeartOutlined />
           {data?.templateFavoriteCount}
         </Typography.Text>,
         <Typography.Text type="secondary">
@@ -93,14 +66,31 @@ export const TemplateCard = ({ id }: TemplateCardProps) => {
       }}
     >
       <List.Item.Meta
-        avatar={<Avatar src={data?.templateWithUser.avatarUrl} />}
+        avatar={
+          <Avatar
+            src={data?.templateWithUser.avatarUrl}
+            onClick={(e) => {
+              e?.stopPropagation();
+              navigate(`/user/${data?.templateWithUser.userId}`);
+            }}
+          />
+        }
         title={data?.templateWithUser?.name}
         description={
           <Space>
             {data?.templateWithUser.category?.name}
             <Divider type="vertical" />
             {data?.templateWithUser.tags?.map((item) => (
-              <Tag color={(tagMapColor as any)[item.name]}>{item.name}</Tag>
+              <Tag
+                color={(tagMapColor as any)[item.name]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/tag/${item.id}`);
+                }}
+                key={item.id}
+              >
+                {item.name}
+              </Tag>
             ))}
           </Space>
         }

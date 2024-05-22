@@ -4,6 +4,10 @@ use axum::{
     extract::State,
     response::{Html, IntoResponse},
 };
+use axum_extra::{
+    headers::{authorization::Bearer, Authorization},
+    TypedHeader,
+};
 
 use crate::{jwt::Claims, AppState};
 mod guard;
@@ -23,14 +27,24 @@ pub fn build_schema() -> AppSchema {
 // http入口
 pub async fn graphql_handler(
     State(state): State<AppState>,
+    auth_header: Option<TypedHeader<Authorization<Bearer>>>,
     claims: Option<Claims>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
     let mut req = req.into_inner();
-    if claims.is_some() {
-        req = req.data(claims.unwrap());
+    if auth_header.is_some() {
+        req = req.data(auth_header.unwrap());
     }
-    req = req.data(state.req).data(state.coon).data(state.redis);
+
+    if let Some(claims) = claims {
+        req = req.data(claims);
+    }
+
+    req = req
+        .data(state.req)
+        .data(state.coon)
+        .data(state.redis)
+        .data(state.secret_store);
 
     state.schema.execute(req).await.into()
 }
