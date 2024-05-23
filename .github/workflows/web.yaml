@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Change working directory to web
+        run: cd web
       - name: Install pnpm
-        run: |
-          cd web
-          npm install -g pnpm
+        run: npm install -g pnpm
       - name: Sync node version and setup cache
         uses: actions/setup-node@v4
         with:
