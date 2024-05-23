@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "w": "graphql-codegen -w"
+    "w": "graphql-codegen -w",
+    "extract": "lingui extract"
   },
   "dependencies": {
     "@ahooksjs/use-url-state": "^3.5.1",

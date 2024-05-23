@@ -33,6 +33,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import styles from "./index.module.less";
+import { useLingui } from "@lingui/react";
 
 const query = gql(`
 query TemplateAndReadme($id:Int!){
@@ -77,6 +78,7 @@ const DIS_FAVORITE = gql(`
 `);
 
 export const Component = () => {
+  useLingui();
   const { id } = useParams();
   const [userId] = useUserStore((store) => [store.user?.id]);
   const navigate = useNavigate();

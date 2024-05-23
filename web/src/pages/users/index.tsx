@@ -5,6 +5,7 @@ import useUrlState from "@ahooksjs/use-url-state";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { Avatar, Input, List, Typography } from "antd";
 import { useParams } from "react-router";
 
@@ -29,6 +30,7 @@ const query = gql(`
 `);
 
 export const Component = () => {
+  useLingui();
   const { id } = useParams();
   const [state, setState] = useUrlState<{
     category?: string;

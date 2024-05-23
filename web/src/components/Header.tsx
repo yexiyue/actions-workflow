@@ -14,6 +14,7 @@ import { Languages } from "lucide-react";
 import { useChangeLanguage } from "@/hooks/useI18nProvider";
 import { useLingui } from "@lingui/react";
 import { useUserStore } from "@/stores/useUserStore";
+import { Logo } from "./Logo";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -28,15 +29,16 @@ export const Header = () => {
   ];
 
   return (
-    <div className="h-14  flex justify-between items-center px-8 border-b">
-      <p
-        className=" text-xl cursor-pointer"
+    <div className="h-14  flex justify-between items-center px-[64px] border-b">
+      <div
+        className="cursor-pointer w-[100px] hover:text-blue-500 transition"
         onClick={() => {
           navigate("/");
         }}
       >
-        Cargo Actions
-      </p>
+        <Logo />
+      </div>
+
       <div className="flex gap-2 items-center">
         {user && (
           <Button

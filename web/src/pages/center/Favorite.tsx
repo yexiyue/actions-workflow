@@ -4,6 +4,7 @@ import useUrlState from "@ahooksjs/use-url-state";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
 import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { Input, List, Pagination } from "antd";
 import ScrollBar from "react-perfect-scrollbar";
 
@@ -21,6 +22,7 @@ query MyFavorite($pagination:Pagination,$search:String){
 `);
 
 export const Component = () => {
+  useLingui();
   const [state, setState] = useUrlState<{
     page: number;
     search?: string;

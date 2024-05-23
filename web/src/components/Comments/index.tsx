@@ -6,6 +6,7 @@ import { App } from "antd";
 import { useMemo } from "react";
 import { CommentIem } from "./CommentIem";
 import { CommentInput } from "./CommentInput";
+import { useLingui } from "@lingui/react";
 
 type CommentsInputProps = {
   id: number;
@@ -76,6 +77,7 @@ function mapCommentTree(data: CommentWithChildren[]) {
 }
 
 export const Comments = (props: CommentsInputProps) => {
+  useLingui();
   const [addComment] = useMutation(COMMENT);
   const { data } = useQuery(QUERY_COMMENT, {
     variables: {

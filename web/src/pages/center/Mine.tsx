@@ -5,6 +5,7 @@ import { useTime } from "@/hooks/useTime";
 import useUrlState from "@ahooksjs/use-url-state";
 import { useMutation, useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useSize } from "ahooks";
 import {
   App,
@@ -59,6 +60,7 @@ const UPDATE_TAGS = gql(`
 `);
 
 export const Component = () => {
+  useLingui();
   const navigate = useNavigate();
   const { message } = App.useApp();
   const [state, setState] = useUrlState<{
