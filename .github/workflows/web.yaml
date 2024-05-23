@@ -30,6 +30,8 @@ jobs:
         run: |
           cd web
           pnpm build
+      - name: ls
+        run: ls -a
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
