@@ -22,14 +22,16 @@ jobs:
           node-version: "node"
           cache: "pnpm"
           cache-dependency-path: "web/pnpm-lock.yaml"
-      - name: Change working directory to web
-        run: cd web
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          cd web
+          pnpm install
       - name: Build
-        run: pnpm build
+        run: |
+          cd web
+          pnpm build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./web/.dist
