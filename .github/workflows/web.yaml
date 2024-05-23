@@ -19,7 +19,7 @@ jobs:
       - name: Sync node version and setup cache
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
+          node-version: "node"
           cache: "pnpm"
       - name: Install dependencies
         run: |
