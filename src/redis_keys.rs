@@ -24,6 +24,7 @@ impl Display for RedisKeys {
     }
 }
 
+#[allow(unused)]
 pub fn gen_key<P: Display>(key: RedisKeys, id: P) -> String {
     format!("{}:{}", key, id)
 }
