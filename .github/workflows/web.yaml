@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Change working directory to web
-        run: cd web
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Sync node version and setup cache
@@ -23,6 +21,9 @@ jobs:
         with:
           node-version: "node"
           cache: "pnpm"
+          cache-dependency-path: "web/pnpm-lock.yaml"
+      - name: Change working directory to web
+        run: cd web
       - name: Install dependencies
         run: pnpm install
       - name: Build
