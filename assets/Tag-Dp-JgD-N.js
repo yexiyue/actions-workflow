@@ -1,4 +1,4 @@
-import{a3 as k,ab as B,a2 as E,r as l,a7 as a,a4 as t,ac as c,a6 as P,aa as m,a9 as Q}from"./index-B0PrfQLx.js";import{g as p,b as G,I as L}from"./index-eE7LXthl.js";import{C as R}from"./CreateModal-Dwf7kVkq.js";import{u as q}from"./useTime-DZ3yU9Z5.js";import{u as M,P as O}from"./index-CvsYaP6J.js";import{u as U,P as z,a as F}from"./index-BbwM99Ca.js";import{u as x}from"./index-DP9EcxQl.js";import"./index-zLrji8-A.js";const{Search:J}=L,K=p(`
+import{a3 as k,ab as B,a2 as E,r as l,a7 as a,a4 as t,ac as c,a6 as P,aa as m,a9 as Q}from"./index-CNm7ylrt.js";import{g as p,b as G,I as L}from"./index-Daa7Jgxx.js";import{C as R}from"./CreateModal-CogAjReq.js";import{u as q}from"./useTime-D7p7YOta.js";import{u as M,P as O}from"./index-NDjTGhAF.js";import{u as U,P as z,a as F}from"./index-DByOtA6p.js";import{u as x}from"./index-CBuKcFEw.js";import"./index-BYu9k_cg.js";const{Search:J}=L,K=p(`
   query Tags($pagination:Pagination,$search:String){
     tags(pagination:$pagination,search:$search){
       total
