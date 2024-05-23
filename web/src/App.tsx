@@ -16,8 +16,10 @@ import { router } from "./router";
 import { StyleProvider } from "@ant-design/cssinjs";
 import axios from "axios";
 
+axios.defaults.baseURL = "https://actions-workflow.shuttleapp.rs";
+
 const httpLink = createHttpLink({
-  uri: "/api/graphql",
+  uri: "https://actions-workflow.shuttleapp.rs/api/graphql",
 });
 
 const errorLink = onError(({ graphQLErrors }) => {
@@ -65,7 +67,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: "network-only",
+      // fetchPolicy: "network-only",
     },
   },
 });
