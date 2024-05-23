@@ -20,6 +20,16 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Tag::Name).string().not_null())
                     .col(ColumnDef::new(Tag::Description).string().not_null())
+                    .col(
+                        ColumnDef::new(Tag::CreateAt)
+                            .timestamp_with_time_zone()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .col(
+                        ColumnDef::new(Tag::UpdateAt)
+                            .timestamp_with_time_zone()
+                            .default(Expr::current_timestamp()),
+                    )
                     .to_owned(),
             )
             .await?;
@@ -51,4 +61,6 @@ pub enum Tag {
     Id,
     Name,
     Description,
+    CreateAt,
+    UpdateAt,
 }

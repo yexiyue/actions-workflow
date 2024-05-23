@@ -7,8 +7,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
 import { t } from "@lingui/macro";
 import { App, Input, List, Menu, MenuProps, Tag } from "antd";
-import { useEffect, useState } from "react";
-import PrefectScrollbar from "react-perfect-scrollbar";
+import { useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router";
 
 const { Search } = Input;
@@ -17,14 +16,6 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const query = gql(`
   query Dates($categoryId: Int, $pagination:Pagination,$search:String) {
-    categories{
-      id
-      name
-    }
-    tags{
-      id
-      name
-    }
     templatesWithPagination(categoryId: $categoryId, pagination: $pagination,search: $search) {
       templates{
         id
@@ -34,19 +25,36 @@ const query = gql(`
   }
 `);
 
+export const TAGS_CATEGORY = gql(`
+  query TagsAndCategories{
+    categories{
+      categories{
+        id
+        name
+      }
+    }
+    tags{
+      tags{
+        id
+        name
+      }
+    }
+  }
+`);
+
 export const Component = () => {
   const { message } = App.useApp();
   const { scrollToTop } = useOutletContext<LayoutOutletContext>();
   const navigate = useNavigate();
-  const [search, setSearch] = useState<string>();
   const [state, setState] = useUrlState<{
     category?: string;
     page: number;
+    search?: string;
   }>({
     page: 1,
   });
   const pageSize = 10;
-
+  const { data: tagsAndCategories } = useQuery(TAGS_CATEGORY);
   const { data, loading, error } = useQuery(query, {
     variables: {
       categoryId: state.category ? parseInt(state.category) : undefined,
@@ -54,7 +62,7 @@ export const Component = () => {
         page: state?.page > 1 ? state.page - 1 : 0,
         pageSize,
       },
-      search: search,
+      search: state.search,
     },
   });
 
@@ -64,7 +72,7 @@ export const Component = () => {
     }
   }, [error]);
   const items: MenuItem[] =
-    data?.categories?.map((item) => {
+    tagsAndCategories?.categories?.categories.map((item) => {
       return {
         key: item.id,
         label: item.name,
@@ -78,35 +86,34 @@ export const Component = () => {
 
   return (
     <div className="w-[80%] flex gap-6 m-auto mt-4 relative pb-6 items-start">
-      <div className="w-[180px] h-[500px] border sticky top-0">
-        <PrefectScrollbar>
-          <Menu
-            items={items}
-            defaultSelectedKeys={["all"]}
-            onSelect={(e) => {
-              if (e.key === "all") {
-                setState({
-                  category: undefined,
-                });
-              } else {
-                setState({
-                  category: Number(e.key),
-                });
-              }
-              scrollToTop();
-            }}
-          />
-        </PrefectScrollbar>
-      </div>
+      <Menu
+        className="w-[180px] rounded-lg"
+        items={items}
+        selectedKeys={[state.category ?? "all"]}
+        onSelect={(e) => {
+          if (e.key === "all") {
+            setState({
+              category: undefined,
+            });
+          } else {
+            setState({
+              category: Number(e.key),
+            });
+          }
+          scrollToTop();
+        }}
+      />
 
       <div className="flex-1 bg-white p-4 min-w-[400px]">
         <Search
           placeholder={t`搜索模板`}
           allowClear
-          value={search}
+          value={state.search}
           className="my-2"
           onChange={(e) => {
-            setSearch(e.target.value);
+            setState({
+              search: e.target.value,
+            });
           }}
           loading={loading}
           enterButton
@@ -131,8 +138,8 @@ export const Component = () => {
         ></List>
       </div>
 
-      <div className="w-[280px] border sticky top-0 flex flex-wrap gap-3 p-4 rounded-lg bg-white">
-        {data?.tags.map((item) => {
+      <div className="w-[280px] shadow-lg  flex flex-wrap gap-3 p-4 rounded-lg bg-white">
+        {tagsAndCategories?.tags.tags.map((item) => {
           return (
             <Tag
               className="cursor-pointer"

@@ -1,4 +1,3 @@
-import { Auth } from "@/components/Auth";
 import { Layout } from "@/components/Layout";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -25,11 +24,29 @@ export const router = createBrowserRouter([
       },
       {
         path: "user-center",
-        element: <Auth />,
+        lazy: () => import("@/pages/center"),
         children: [
           {
             index: true,
-            lazy: () => import("@/pages/center"),
+            path: "favorite",
+            lazy: () => import("@/pages/center/Favorite"),
+          },
+          {
+            path: "mine",
+            lazy: () => import("@/pages/center/Mine"),
+          },
+          {
+            path: "admin",
+            children: [
+              {
+                path: "category",
+                lazy: () => import("@/pages/center/admin/Category"),
+              },
+              {
+                path: "tag",
+                lazy: () => import("@/pages/center/admin/Tag"),
+              },
+            ],
           },
         ],
       },

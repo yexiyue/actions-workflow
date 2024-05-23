@@ -19,6 +19,16 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Category::Name).string().not_null())
                     .col(ColumnDef::new(Category::Description).string().not_null())
+                    .col(
+                        ColumnDef::new(Category::CreateAt)
+                            .timestamp_with_time_zone()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .col(
+                        ColumnDef::new(Category::UpdateAt)
+                            .timestamp_with_time_zone()
+                            .default(Expr::current_timestamp()),
+                    )
                     .to_owned(),
             )
             .await?;
@@ -52,4 +62,6 @@ pub enum Category {
     Id,
     Name,
     Description,
+    CreateAt,
+    UpdateAt,
 }

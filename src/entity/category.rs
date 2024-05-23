@@ -20,6 +20,8 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: String,
+    pub create_at: Option<DateTimeWithTimeZone>,
+    pub update_at: Option<DateTimeWithTimeZone>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -5,7 +5,6 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { Input, List, Typography } from "antd";
-import { useState } from "react";
 import { useParams } from "react-router";
 
 const { Search } = Input;
@@ -28,10 +27,11 @@ const query = gql(`
 
 export const Component = () => {
   const { id } = useParams();
-  const [search, setSearch] = useState<string>();
+
   const [state, setState] = useUrlState<{
     category?: string;
     page: number;
+    search?: string;
   }>({
     page: 1,
   });
@@ -44,7 +44,7 @@ export const Component = () => {
         page: state?.page > 1 ? state.page - 1 : 0,
         pageSize,
       },
-      search: search,
+      search: state.search,
     },
   });
 
@@ -65,16 +65,18 @@ export const Component = () => {
         <Search
           placeholder={t`搜索模板`}
           allowClear
-          value={search}
+          value={state.search}
           className=" max-w-[50%]"
           onChange={(e) => {
-            setSearch(e.target.value);
+            setState({
+              search: e.target.value,
+            });
           }}
           loading={loading}
           enterButton
         />
       </div>
-      <div className="flex-1 bg-white p-4 min-w-[400px] w-[80%] m-auto mt-4 mb-6">
+      <div className="flex-1 bg-white shadow-lg rounded-lg p-4 min-w-[400px] w-[80%] m-auto mt-4 mb-6">
         <List
           loading={{
             spinning: loading,

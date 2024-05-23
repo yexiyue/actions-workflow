@@ -70,10 +70,24 @@ impl TemplateQuery {
     }
 
     #[graphql(guard = "AuthGuard")]
-    async fn favorite_templates(&self, ctx: &Context<'_>) -> Result<Vec<Option<Model>>> {
+    async fn favorite_templates(
+        &self,
+        ctx: &Context<'_>,
+        pagination: Option<Pagination>,
+        search: Option<String>,
+    ) -> Result<UserTemplates> {
         let db = ctx.data::<DbConn>()?;
+
         let claims = ctx.data::<Claims>()?;
-        Ok(TemplateService::find_user_favorites_template(db, claims.user_id).await?)
+
+        let (all_count, total, templates) =
+            TemplateService::find_user_favorites_template(db, claims.user_id, pagination, search)
+                .await?;
+
+        Ok(UserTemplates(
+            TemplatesWithPagination { templates, total },
+            UserTemplatesAllCount { all_count },
+        ))
     }
 
     /// 通过ID获取模版详情
@@ -94,6 +108,11 @@ impl TemplateQuery {
             TemplateCategory { category },
             TemplateTags { tags },
         ))
+    }
+
+    async fn template_tags(&self, ctx: &Context<'_>, id: i32) -> Result<Vec<tag::Model>> {
+        let db = ctx.data::<DbConn>()?;
+        Ok(TemplateTagService::find_tags_for_template(db, id).await?)
     }
 
     /// 需要权限

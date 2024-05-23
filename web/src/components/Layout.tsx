@@ -15,17 +15,17 @@ export const Layout = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-hidden">
+    <div className="w-screen h-screen overflow-hidden flex flex-col">
       <Header />
-      <div className="w-full h-[calc(100%-56px)] bg-gray-100 relative">
-        <ScrollBar
-          containerRef={(ref) => {
-            scrollbarRef.current = ref as any;
-          }}
-        >
-          <Outlet context={{ scrollToTop }} />
-        </ScrollBar>
-      </div>
+
+      <ScrollBar
+        containerRef={(ref) => {
+          scrollbarRef.current = ref as any;
+        }}
+        className="w-full bg-gray-100 relative"
+      >
+        <Outlet context={{ scrollToTop }} />
+      </ScrollBar>
     </div>
   );
 };

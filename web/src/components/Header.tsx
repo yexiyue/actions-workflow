@@ -42,7 +42,7 @@ export const Header = () => {
           <Button
             type="primary"
             onClick={() => {
-              navigate("/user-center");
+              navigate("/user-center/mine");
             }}
           >
             <Trans>个人中心</Trans>

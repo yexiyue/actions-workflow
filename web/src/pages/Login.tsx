@@ -37,9 +37,7 @@ export const Component = () => {
           onClick={() => login()}
           loading={loading}
         >
-          <>
-            <Trans>Github</Trans>
-          </>
+          Github
         </Button>
       </div>
     </div>

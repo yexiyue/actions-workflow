@@ -18,12 +18,28 @@ pub struct TagTemplates {
     all_count: u64,
 }
 
+#[derive(Debug, SimpleObject)]
+pub struct TagWithPagination {
+    tags: Vec<Model>,
+    total: u64,
+    all_count: u64,
+}
+
 #[Object]
 impl TagQuery {
-    async fn tags(&self, ctx: &Context<'_>) -> Result<Vec<Model>> {
+    async fn tags(
+        &self,
+        ctx: &Context<'_>,
+        pagination: Option<Pagination>,
+        search: Option<String>,
+    ) -> Result<TagWithPagination> {
         let db = ctx.data::<DbConn>()?;
-        let res = TagService::find_all(db).await?;
-        Ok(res)
+        let (all_count, total, tags) = TagService::find_all(db, pagination, search).await?;
+        Ok(TagWithPagination {
+            tags,
+            total,
+            all_count,
+        })
     }
 
     /// 查找关联这个标签的模版
