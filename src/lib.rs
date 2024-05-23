@@ -24,7 +24,11 @@ mod redis_keys;
 pub async fn build_root_router(coon: DbConn, secret_store: SecretStore) -> Result<Router> {
     let client_id = secret_store.get("OAUTH_CLIENT_ID").unwrap();
     let client_secret = secret_store.get("OAUTH_CLIENT_SECRET").unwrap();
-    let auth = OAuth::new(&client_id, &client_secret, "http://localhost:5173/auth")?;
+    let auth = OAuth::new(
+        &client_id,
+        &client_secret,
+        "https://yexiyue.github.io/actions-workflows/auth",
+    )?;
     let redis_url = secret_store.get("REDIS_URL").unwrap();
     let client = redis::Client::open(redis_url).unwrap();
     let con: redis::aio::MultiplexedConnection =
