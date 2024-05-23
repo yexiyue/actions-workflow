@@ -1,4 +1,4 @@
-import{a4 as e,a7 as o,al as n,ah as p}from"./index-5pNbV5yM.js";import{g as c,b as g,I as m}from"./index-cW0ZioI2.js";import{L as u,T as h}from"./TemplateCard-C9uNITKz.js";import{u as d,P as f}from"./index-ks3wl7Dz.js";import"./tagMapColor-DTc7TQem.js";import"./index-CgCbgM6x.js";const{Search:x}=m,j=c(`
+import{a4 as e,a7 as o,al as n,ah as p}from"./index-B0PrfQLx.js";import{g as c,b as g,I as m}from"./index-eE7LXthl.js";import{L as u,T as h}from"./TemplateCard-DL6EMSqy.js";import{u as d,P as f}from"./index-CvsYaP6J.js";import"./tagMapColor-DNEdUJNx.js";import"./index-zLrji8-A.js";const{Search:x}=m,j=c(`
 query MyFavorite($pagination:Pagination,$search:String){
     favoriteTemplates(pagination: $pagination,search: $search){
       templates{
