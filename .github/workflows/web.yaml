@@ -15,16 +15,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: |
+          cd web
+          npm install -g pnpm
       - name: Sync node version and setup cache
         uses: actions/setup-node@v4
         with:
           node-version: "node"
           cache: "pnpm"
       - name: Install dependencies
-        run: |
-          cd web
-          pnpm install
+        run: pnpm install
       - name: Build
         run: pnpm build
       - name: Deploy
