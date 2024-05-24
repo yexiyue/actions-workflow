@@ -1,4 +1,4 @@
-import{a3 as c,af as p,a4 as e,ac as n,aa as g,a7 as d,ah as h}from"./index-BDD7mHiH.js";import{g as x,b as u,I as y}from"./index-mwPAbnPL.js";import{M as r}from"./MySkeleton-BRiiwqF2.js";import{L as j,T}from"./TemplateCard-DeTTet3C.js";import{u as f}from"./index-CzBIQUnk.js";import"./index-C3M1MKDk.js";const{Search:I}=y,N=x(`
+import{a3 as c,af as p,a4 as e,ac as n,aa as g,a7 as d,ah as h}from"./index-DfsE3ZUc.js";import{g as x,b as u,I as y}from"./index-Bs1hnRnv.js";import{M as r}from"./MySkeleton-Dx4bauC4.js";import{L as j,T}from"./TemplateCard-BPF8Wnfl.js";import{u as f}from"./index-nt0h-bPf.js";import"./index-DiZEXJCJ.js";const{Search:I}=y,N=x(`
   query TagTemplates($id:Int!,$pagination:Pagination,$search:String){
     tagByIdWithTemplates(id: $id,pagination: $pagination,search: $search){
       total

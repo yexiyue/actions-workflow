@@ -1,4 +1,4 @@
-import{a3 as g,af as h,a4 as e,a5 as y,ac as i,aa as l,a7 as j,ah as f}from"./index-BDD7mHiH.js";import{g as I,b as v,I as w}from"./index-mwPAbnPL.js";import{M as n}from"./MySkeleton-BRiiwqF2.js";import{L as T,T as B}from"./TemplateCard-DeTTet3C.js";import{u as N}from"./useTime-Cuu0KwbP.js";import{u as S}from"./index-CzBIQUnk.js";import"./index-C3M1MKDk.js";const{Search:U}=w,C=I(`
+import{a3 as g,af as h,a4 as e,a5 as y,ac as i,aa as l,a7 as j,ah as f}from"./index-DfsE3ZUc.js";import{g as I,b as v,I as w}from"./index-Bs1hnRnv.js";import{M as n}from"./MySkeleton-Dx4bauC4.js";import{L as T,T as B}from"./TemplateCard-BPF8Wnfl.js";import{u as N}from"./useTime-QPZVLeZL.js";import{u as S}from"./index-nt0h-bPf.js";import"./index-DiZEXJCJ.js";const{Search:U}=w,C=I(`
   query UserTemplates($id:Int!,$pagination:Pagination,$search:String){
     userById(id:$id) {
       id
