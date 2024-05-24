@@ -13,19 +13,19 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/pages/tags/index.tsx:63
+#: src/pages/tags/index.tsx:69
 msgid "{0}模版 (仅公开)"
 msgstr "{0}模版 (仅公开)"
 
-#: src/components/admin/CreateModal.tsx:44
+#: src/components/admin/CreateModal.tsx:50
 msgid "{type}名称"
 msgstr "{type}名称"
 
-#: src/components/admin/CreateModal.tsx:50
+#: src/components/admin/CreateModal.tsx:56
 msgid "{type}描述"
 msgstr "{type}描述"
 
-#: src/pages/templates/index.tsx:247
+#: src/pages/templates/index.tsx:272
 msgid "下载次数"
 msgstr "下载次数"
 
@@ -33,7 +33,7 @@ msgstr "下载次数"
 msgid "个人中心"
 msgstr "个人中心"
 
-#: src/pages/center/Mine.tsx:152
+#: src/pages/center/Mine.tsx:153
 msgid "代码仓库"
 msgstr "代码仓库"
 
@@ -42,46 +42,58 @@ msgstr "代码仓库"
 #~ msgid "你好"
 #~ msgstr ""
 
-#: src/pages/center/admin/Category.tsx:194
+#: src/pages/center/admin/Category.tsx:195
 msgid "你确定要删除该分类吗？"
 msgstr "你确定要删除该分类吗？"
 
-#: src/pages/center/admin/Tag.tsx:192
+#: src/pages/center/admin/Tag.tsx:193
 msgid "你确定要删除该标签吗？"
 msgstr "你确定要删除该标签吗？"
 
-#: src/pages/center/Mine.tsx:210
+#: src/pages/center/Mine.tsx:225
 msgid "你确定要删除该模版吗？"
 msgstr "你确定要删除该模版吗？"
 
-#: src/pages/center/admin/Category.tsx:190
-#: src/pages/center/admin/Tag.tsx:188
-#: src/pages/center/Mine.tsx:206
+#: src/pages/center/admin/Category.tsx:191
+#: src/pages/center/admin/Tag.tsx:189
+#: src/pages/center/Mine.tsx:221
 msgid "修改"
 msgstr "修改"
 
-#: src/components/mine/UpdateModal.tsx:78
+#: src/pages/center/admin/Category.tsx:331
+msgid "修改中..."
+msgstr "修改中..."
+
+#: src/pages/center/admin/Category.tsx:360
+msgid "修改失败"
+msgstr "修改失败"
+
+#: src/pages/center/admin/Category.tsx:346
+msgid "修改成功"
+msgstr "修改成功"
+
+#: src/components/mine/UpdateModal.tsx:83
 msgid "修改模版"
 msgstr "修改模版"
 
-#: src/pages/templates/index.tsx:321
+#: src/pages/templates/index.tsx:348
 msgid "元数据"
 msgstr "元数据"
 
-#: src/pages/Home.tsx:86
+#: src/pages/Home.tsx:89
 msgid "全部"
 msgstr "全部"
 
-#: src/components/mine/UpdateModal.tsx:89
-#: src/pages/center/admin/Category.tsx:281
+#: src/components/mine/UpdateModal.tsx:99
+#: src/pages/center/admin/Category.tsx:300
 msgid "分类"
 msgstr "分类"
 
-#: src/pages/center/admin/Category.tsx:111
+#: src/pages/center/admin/Category.tsx:112
 msgid "分类名称"
 msgstr "分类名称"
 
-#: src/pages/center/admin/Category.tsx:127
+#: src/pages/center/admin/Category.tsx:128
 msgid "分类描述"
 msgstr "分类描述"
 
@@ -93,98 +105,109 @@ msgstr "分类管理"
 msgid "切换语言"
 msgstr ""
 
-#: src/pages/templates/index.tsx:328
+#: src/pages/templates/index.tsx:358
 msgid "创建于："
 msgstr "创建于："
 
-#: src/pages/center/admin/Category.tsx:143
-#: src/pages/center/admin/Tag.tsx:141
-#: src/pages/center/Mine.tsx:116
+#: src/pages/center/admin/Category.tsx:144
+#: src/pages/center/admin/Tag.tsx:142
+#: src/pages/center/Mine.tsx:117
 msgid "创建时间"
 msgstr "创建时间"
 
-#: src/pages/center/admin/Category.tsx:216
-#: src/pages/center/admin/Tag.tsx:214
-#: src/pages/center/Mine.tsx:232
+#: src/pages/center/admin/Category.tsx:231
+#: src/pages/center/admin/Tag.tsx:226
+#: src/pages/center/Mine.tsx:261
 msgid "删除"
 msgstr "删除"
 
-#: src/pages/center/admin/Category.tsx:193
+#: src/components/Comments/CommentIem.tsx:82
+#: src/pages/center/admin/Category.tsx:202
+#: src/pages/center/admin/Tag.tsx:199
+#: src/pages/center/Mine.tsx:234
+msgid "删除中..."
+msgstr "删除中..."
+
+#: src/pages/center/admin/Category.tsx:194
 msgid "删除分类"
 msgstr "删除分类"
 
-#: src/pages/center/admin/Category.tsx:206
-#: src/pages/center/admin/Tag.tsx:204
-#: src/pages/center/Mine.tsx:222
+#: src/components/Comments/CommentIem.tsx:98
+#: src/pages/center/admin/Category.tsx:219
+#: src/pages/center/admin/Tag.tsx:214
+#: src/pages/center/Mine.tsx:250
 msgid "删除失败"
 msgstr "删除失败"
 
-#: src/components/Comments/CommentIem.tsx:91
 #: src/components/Comments/CommentIem.tsx:93
-#: src/pages/center/admin/Category.tsx:204
-#: src/pages/center/admin/Tag.tsx:202
-#: src/pages/center/Mine.tsx:220
+#: src/pages/center/admin/Category.tsx:213
+#: src/pages/center/admin/Tag.tsx:209
+#: src/pages/center/Mine.tsx:244
 msgid "删除成功"
 msgstr "删除成功"
 
-#: src/pages/center/admin/Tag.tsx:191
+#: src/pages/center/admin/Tag.tsx:192
 msgid "删除标签"
 msgstr "删除标签"
 
-#: src/pages/center/Mine.tsx:209
+#: src/pages/center/Mine.tsx:224
 msgid "删除模版"
 msgstr "删除模版"
 
-#: src/components/mine/UpdateModal.tsx:85
-#: src/pages/center/admin/Category.tsx:196
-#: src/pages/center/admin/Tag.tsx:194
-#: src/pages/center/Mine.tsx:212
+#: src/components/mine/UpdateModal.tsx:95
+#: src/pages/center/admin/Category.tsx:197
+#: src/pages/center/admin/Tag.tsx:195
+#: src/pages/center/Mine.tsx:227
 msgid "取消"
 msgstr "取消"
 
-#: src/pages/templates/index.tsx:276
+#: src/pages/templates/index.tsx:302
 msgid "取消收藏"
 msgstr "取消收藏"
 
-#: src/pages/templates/index.tsx:195
-#: src/pages/templates/index.tsx:272
+#: src/pages/templates/index.tsx:209
+#: src/pages/templates/index.tsx:298
 msgid "取消收藏成功"
 msgstr "取消收藏成功"
 
-#: src/components/Comments/CommentIem.tsx:105
-#: src/components/Comments/CommentInput.tsx:59
+#: src/components/Comments/CommentIem.tsx:113
+#: src/components/Comments/CommentInput.tsx:61
 msgid "回复"
 msgstr "回复"
 
-#: src/components/Comments/CommentIem.tsx:112
+#: src/components/Comments/CommentIem.tsx:121
 msgid "回复{0}"
 msgstr "回复{0}"
 
-#: src/components/Comments/CommentIem.tsx:127
+#: src/components/Comments/CommentIem.tsx:125
+msgid "回复中..."
+msgstr "回复中..."
+
+#: src/components/Comments/CommentIem.tsx:145
 msgid "回复失败"
 msgstr "回复失败"
 
-#: src/components/Comments/CommentIem.tsx:125
+#: src/components/Comments/CommentIem.tsx:140
 msgid "回复成功"
 msgstr "回复成功"
 
-#: src/pages/templates/index.tsx:335
+#: src/pages/templates/index.tsx:366
 msgid "在项目目录中运行以下 Cargo 命令"
 msgstr "在项目目录中运行以下 Cargo 命令"
 
-#: src/pages/templates/index.tsx:349
+#: src/pages/templates/index.tsx:380
 msgid "复制"
 msgstr "复制"
 
-#: src/pages/templates/index.tsx:343
+#: src/pages/templates/index.tsx:374
 msgid "复制成功"
 msgstr "复制成功"
 
-#: src/pages/templates/index.tsx:373
+#: src/pages/templates/index.tsx:411
 msgid "存储库"
 msgstr "存储库"
 
-#: src/pages/templates/index.tsx:332
+#: src/pages/templates/index.tsx:363
 msgid "安装"
 msgstr "安装"
 
@@ -192,7 +215,7 @@ msgstr "安装"
 msgid "我的模版"
 msgstr "我的模版"
 
-#: src/pages/templates/index.tsx:355
+#: src/pages/templates/index.tsx:386
 msgid "拥有者"
 msgstr "拥有者"
 
@@ -200,39 +223,39 @@ msgstr "拥有者"
 msgid "授权中..."
 msgstr "授权中..."
 
-#: src/pages/center/admin/Category.tsx:229
+#: src/pages/center/admin/Category.tsx:244
 msgid "搜索分类"
 msgstr "搜索分类"
 
-#: src/pages/center/admin/Tag.tsx:227
+#: src/pages/center/admin/Tag.tsx:239
 msgid "搜索标签"
 msgstr "搜索标签"
 
 #: src/pages/center/Favorite.tsx:47
-#: src/pages/Home.tsx:111
-#: src/pages/tags/index.tsx:68
-#: src/pages/users/index.tsx:73
+#: src/pages/Home.tsx:122
+#: src/pages/tags/index.tsx:75
+#: src/pages/users/index.tsx:82
 msgid "搜索模板"
 msgstr "搜索模板"
 
-#: src/pages/center/Mine.tsx:245
+#: src/pages/center/Mine.tsx:274
 msgid "搜索模版"
 msgstr "搜索模版"
 
-#: src/pages/center/admin/Category.tsx:178
-#: src/pages/center/admin/Tag.tsx:176
-#: src/pages/center/Mine.tsx:195
+#: src/pages/center/admin/Category.tsx:179
+#: src/pages/center/admin/Tag.tsx:177
+#: src/pages/center/Mine.tsx:210
 msgid "操作"
 msgstr "操作"
 
-#: src/pages/templates/index.tsx:188
-#: src/pages/templates/index.tsx:289
-#: src/pages/templates/index.tsx:302
+#: src/pages/templates/index.tsx:201
+#: src/pages/templates/index.tsx:316
+#: src/pages/templates/index.tsx:329
 msgid "收藏"
 msgstr "收藏"
 
-#: src/pages/templates/index.tsx:197
-#: src/pages/templates/index.tsx:285
+#: src/pages/templates/index.tsx:211
+#: src/pages/templates/index.tsx:312
 msgid "收藏成功"
 msgstr "收藏成功"
 
@@ -240,61 +263,74 @@ msgstr "收藏成功"
 msgid "收藏模版"
 msgstr "收藏模版"
 
-#: src/pages/templates/index.tsx:253
+#: src/pages/templates/index.tsx:278
 msgid "收藏次数"
 msgstr "收藏次数"
 
-#: src/pages/center/Mine.tsx:161
+#: src/pages/center/Mine.tsx:162
 msgid "无"
 msgstr "无"
 
-#: src/pages/center/Mine.tsx:168
+#: src/pages/center/Mine.tsx:169
 msgid "是否公开"
 msgstr "是否公开"
 
-#: src/pages/templates/index.tsx:381
+#: src/pages/templates/index.tsx:420
 msgid "暂无存储库"
 msgstr "暂无存储库"
 
-#: src/components/admin/CreateModal.tsx:25
-#: src/components/mine/UpdateModal.tsx:84
+#: src/components/admin/CreateModal.tsx:26
+#: src/components/mine/UpdateModal.tsx:94
 msgid "更新"
 msgstr "更新"
 
-#: src/pages/templates/index.tsx:324
+#: src/pages/center/admin/Tag.tsx:323
+#: src/pages/center/Mine.tsx:181
+#: src/pages/center/Mine.tsx:328
+msgid "更新中..."
+msgstr "更新中..."
+
+#: src/pages/templates/index.tsx:352
 msgid "更新于："
 msgstr "更新于："
 
-#: src/pages/center/admin/Category.tsx:315
-#: src/pages/center/admin/Tag.tsx:313
-#: src/pages/center/Mine.tsx:187
-#: src/pages/center/Mine.tsx:310
+#: src/pages/center/admin/Tag.tsx:349
+#: src/pages/center/Mine.tsx:201
+#: src/pages/center/Mine.tsx:356
 msgid "更新失败"
 msgstr "更新失败"
 
-#: src/pages/center/admin/Category.tsx:309
-#: src/pages/center/admin/Tag.tsx:307
-#: src/pages/center/Mine.tsx:185
-#: src/pages/center/Mine.tsx:308
+#: src/pages/center/admin/Tag.tsx:337
+#: src/pages/center/Mine.tsx:195
+#: src/pages/center/Mine.tsx:350
 msgid "更新成功"
 msgstr "更新成功"
 
-#: src/pages/center/admin/Category.tsx:161
-#: src/pages/center/admin/Tag.tsx:159
-#: src/pages/center/Mine.tsx:134
+#: src/pages/center/admin/Category.tsx:162
+#: src/pages/center/admin/Tag.tsx:160
+#: src/pages/center/Mine.tsx:135
 msgid "更新时间"
 msgstr "更新时间"
 
-#: src/components/mine/UpdateModal.tsx:100
-#: src/pages/center/admin/Tag.tsx:279
+#: src/components/ErrorBoundary.tsx:17
+msgid "未找到该页面"
+msgstr "未找到该页面"
+
+#: src/components/ErrorBoundary.tsx:19
+#: src/components/ErrorBoundary.tsx:41
+msgid "未知错误"
+msgstr "未知错误"
+
+#: src/components/mine/UpdateModal.tsx:114
+#: src/pages/center/admin/Tag.tsx:295
 msgid "标签"
 msgstr "标签"
 
-#: src/pages/center/admin/Tag.tsx:109
+#: src/pages/center/admin/Tag.tsx:110
 msgid "标签名称"
 msgstr "标签名称"
 
-#: src/pages/center/admin/Tag.tsx:125
+#: src/pages/center/admin/Tag.tsx:126
 msgid "标签描述"
 msgstr "标签描述"
 
@@ -302,55 +338,60 @@ msgstr "标签描述"
 msgid "标签管理"
 msgstr "标签管理"
 
-#: src/components/mine/UpdateModal.tsx:109
+#: src/components/mine/UpdateModal.tsx:124
 msgid "模版代码仓库URL"
 msgstr "模版代码仓库URL"
 
-#: src/pages/center/Mine.tsx:104
+#: src/pages/center/Mine.tsx:105
 msgid "模版名称"
 msgstr "模版名称"
 
-#: src/pages/users/index.tsx:66
+#: src/pages/users/index.tsx:74
 msgid "模版数量: {0} (仅公开数量)"
 msgstr "模版数量: {0} (仅公开数量)"
 
-#: src/pages/users/index.tsx:63
+#: src/pages/users/index.tsx:69
 msgid "注册时间: {0}"
 msgstr "注册时间: {0}"
 
-#: src/components/admin/CreateModal.tsx:25
+#: src/components/admin/CreateModal.tsx:26
 msgid "添加"
 msgstr "添加"
 
-#: src/pages/center/admin/Category.tsx:250
+#: src/pages/center/admin/Category.tsx:311
+#: src/pages/center/admin/Tag.tsx:305
+msgid "添加中..."
+msgstr "添加中..."
+
+#: src/pages/center/admin/Category.tsx:265
 msgid "添加分类"
 msgstr "添加分类"
 
-#: src/pages/center/admin/Category.tsx:313
-#: src/pages/center/admin/Tag.tsx:311
+#: src/pages/center/admin/Category.tsx:354
+#: src/pages/center/admin/Tag.tsx:344
 msgid "添加失败"
 msgstr "添加失败"
 
-#: src/pages/center/admin/Category.tsx:298
-#: src/pages/center/admin/Tag.tsx:296
+#: src/pages/center/admin/Category.tsx:325
+#: src/pages/center/admin/Tag.tsx:318
 msgid "添加成功"
 msgstr "添加成功"
 
-#: src/pages/center/admin/Tag.tsx:248
+#: src/pages/center/admin/Tag.tsx:260
 msgid "添加标签"
 msgstr "添加标签"
 
-#: src/components/Comments/CommentInput.tsx:48
+#: src/components/Comments/CommentInput.tsx:49
 msgid "添加评论"
 msgstr "添加评论"
 
-#: src/pages/users/index.tsx:60
+#: src/pages/users/index.tsx:64
 msgid "用户名称: {0}"
 msgstr "用户名称: {0}"
 
-#: src/components/Comments/CommentInput.tsx:69
-#: src/components/Header.tsx:79
-#: src/components/Header.tsx:86
+#: src/components/Comments/CommentInput.tsx:71
+#: src/components/Header.tsx:81
+#: src/components/Header.tsx:88
 #: src/pages/Login.tsx:32
 msgid "登陆"
 msgstr "登陆"
@@ -363,69 +404,74 @@ msgstr "登陆失败"
 msgid "登陆成功"
 msgstr "登陆成功"
 
-#: src/pages/center/admin/Category.tsx:195
-#: src/pages/center/admin/Tag.tsx:193
-#: src/pages/center/Mine.tsx:211
+#: src/pages/center/admin/Category.tsx:196
+#: src/pages/center/admin/Tag.tsx:194
+#: src/pages/center/Mine.tsx:226
 msgid "确定"
 msgstr "确定"
 
-#: src/components/Comments/CommentInput.tsx:59
-#: src/pages/templates/index.tsx:203
-#: src/pages/templates/index.tsx:387
+#: src/components/Comments/CommentInput.tsx:61
+#: src/pages/templates/index.tsx:217
+#: src/pages/templates/index.tsx:427
 msgid "评论"
 msgstr "评论"
 
-#: src/components/Comments/index.tsx:114
+#: src/components/Comments/index.tsx:115
 msgid "评论失败"
 msgstr "评论失败"
 
-#: src/components/Comments/index.tsx:112
+#: src/components/Comments/index.tsx:113
 msgid "评论成功"
 msgstr "评论成功"
 
-#: src/pages/templates/index.tsx:259
+#: src/pages/templates/index.tsx:284
 msgid "评论次数"
 msgstr "评论次数"
 
-#: src/pages/templates/index.tsx:188
+#: src/pages/templates/index.tsx:201
 msgid "请先登录"
 msgstr "请先登录"
 
-#: src/components/Comments/CommentInput.tsx:48
-#: src/pages/templates/index.tsx:294
+#: src/components/Comments/CommentInput.tsx:49
+#: src/pages/templates/index.tsx:321
 msgid "请先登陆"
 msgstr "请先登陆"
 
-#: src/components/admin/CreateModal.tsx:46
-#: src/components/admin/CreateModal.tsx:48
+#: src/components/admin/CreateModal.tsx:52
+#: src/components/admin/CreateModal.tsx:54
 msgid "请输入{type}名称"
 msgstr "请输入{type}名称"
 
-#: src/components/admin/CreateModal.tsx:60
+#: src/components/admin/CreateModal.tsx:66
 msgid "请输入{type}描述"
 msgstr "请输入{type}描述"
 
-#: src/components/mine/UpdateModal.tsx:110
+#: src/components/mine/UpdateModal.tsx:125
 msgid "请输入模版代码仓库URL"
 msgstr "请输入模版代码仓库URL"
 
-#: src/components/Comments/CommentInput.tsx:37
+#: src/components/Comments/CommentInput.tsx:38
 msgid "请输入评论"
 msgstr "请输入评论"
 
-#: src/components/mine/UpdateModal.tsx:94
-#: src/components/mine/UpdateModal.tsx:98
+#: src/components/mine/UpdateModal.tsx:104
+#: src/components/mine/UpdateModal.tsx:111
 msgid "请选择分类"
 msgstr "请选择分类"
 
-#: src/components/mine/UpdateModal.tsx:103
+#: src/components/mine/UpdateModal.tsx:117
 msgid "请选择标签"
 msgstr "请选择标签"
 
 #: src/pages/Authorized.tsx:82
-#: src/pages/templates/index.tsx:181
+#: src/pages/templates/index.tsx:194
 msgid "返回"
 msgstr "返回"
+
+#: src/components/ErrorBoundary.tsx:30
+#: src/components/ErrorBoundary.tsx:51
+msgid "返回首页"
+msgstr "返回首页"
 
 #: src/components/Header.tsx:27
 msgid "退出登陆"

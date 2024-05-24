@@ -151,10 +151,10 @@ export const Component = () => {
     {
       dataIndex: "sourceCodeUrl",
       title: t`代码仓库`,
-      width: 120,
+      width: 150,
       render: (sourceCodeUrl) => {
         return sourceCodeUrl ? (
-          <Typography.Link href={sourceCodeUrl}>
+          <Typography.Link href={sourceCodeUrl} ellipsis>
             {sourceCodeUrl}
           </Typography.Link>
         ) : (
