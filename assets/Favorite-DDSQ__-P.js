@@ -1,4 +1,4 @@
-import{a3 as o,a4 as a,a7 as n,al as p,ah as c}from"./index-2Og1nv0n.js";import{g,b as u,I as m}from"./index-BDRk5EhP.js";import{L as h,T as d}from"./TemplateCard-BE_FMq4j.js";import{u as f,P as x}from"./index-BQXgRjwF.js";import"./MySkeleton-BIgMNdIE.js";import"./index-BH574STE.js";const{Search:j}=m,v=g(`
+import{a3 as o,a4 as a,a7 as n,al as p,ah as c}from"./index-Bf3tMyn6.js";import{g,b as u,I as m}from"./index-BiSxIIt5.js";import{L as h,T as d}from"./TemplateCard-DNFL9l7g.js";import{u as f,P as x}from"./index-DFwDVimj.js";import"./MySkeleton-tBAIsiYB.js";import"./index-RQEc1OdY.js";const{Search:j}=m,v=g(`
 query MyFavorite($pagination:Pagination,$search:String){
     favoriteTemplates(pagination: $pagination,search: $search){
       templates{
