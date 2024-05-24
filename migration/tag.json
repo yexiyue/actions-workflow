@@ -250,5 +250,23 @@
   },
   {
     "name": "NoSQL"
+  },
+  {
+    "name": "Rust"
+  },
+  {
+    "name": "Vite"
+  },
+  {
+    "name": "Github Pages"
+  },
+  {
+    "name": "Git"
+  },
+  {
+    "name": "Tauri"
+  },
+  {
+    "name": "mdBook"
   }
 ]
