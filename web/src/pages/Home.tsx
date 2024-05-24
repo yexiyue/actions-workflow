@@ -1,6 +1,7 @@
 import { gql } from "@/__generated__/gql";
 import tagMapColor from "@/assets/tagMapColor.json";
 import { LayoutOutletContext } from "@/components/Layout";
+import { MySkeleton } from "@/components/MySkeleton";
 import { TemplateCard } from "@/components/TemplateCard";
 import useUrlState from "@ahooksjs/use-url-state";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -56,7 +57,9 @@ export const Component = () => {
     page: 1,
   });
   const pageSize = 10;
-  const { data: tagsAndCategories } = useQuery(TAGS_CATEGORY);
+  const { data: tagsAndCategories, loading: tagsAndCategoriesLoading } =
+    useQuery(TAGS_CATEGORY);
+
   const { data, loading, error } = useQuery(query, {
     variables: {
       categoryId: state.category ? parseInt(state.category) : undefined,
@@ -88,23 +91,31 @@ export const Component = () => {
 
   return (
     <div className="w-[80%] flex gap-6 m-auto mt-4 relative pb-6 items-start">
-      <Menu
-        className="w-[180px] rounded-lg"
-        items={items}
-        selectedKeys={[state.category ?? "all"]}
-        onSelect={(e) => {
-          if (e.key === "all") {
-            setState({
-              category: undefined,
-            });
-          } else {
-            setState({
-              category: Number(e.key),
-            });
-          }
-          scrollToTop();
-        }}
-      />
+      {tagsAndCategoriesLoading ? (
+        <div className="flex gap-2 bg-white w-[180px] flex-shrink-0 rounded-lg flex-col p-2">
+          {Array.from(Array(15)).map((_, i) => (
+            <MySkeleton key={i} loading className=" h-[40px]" />
+          ))}
+        </div>
+      ) : (
+        <Menu
+          className="w-[180px] rounded-lg flex-shrink-0"
+          items={items}
+          selectedKeys={[state.category ?? "all"]}
+          onSelect={(e) => {
+            if (e.key === "all") {
+              setState({
+                category: undefined,
+              });
+            } else {
+              setState({
+                category: Number(e.key),
+              });
+            }
+            scrollToTop();
+          }}
+        />
+      )}
 
       <div className="flex-1 bg-white p-4 min-w-[400px]">
         <Search
@@ -141,20 +152,34 @@ export const Component = () => {
       </div>
 
       <div className="w-[280px] shadow-lg  flex flex-wrap gap-3 p-4 rounded-lg bg-white">
-        {tagsAndCategories?.tags.tags.map((item) => {
-          return (
-            <Tag
-              className="cursor-pointer"
-              color={(tagMapColor as any)[item.name]}
-              onClick={() => {
-                navigate(`/tag/${item.id}`);
-              }}
-              key={item.id}
-            >
-              {item.name}
-            </Tag>
-          );
-        })}
+        {tagsAndCategoriesLoading
+          ? Array.from(Array(80)).map((_, i) => {
+              const width = Math.floor(Math.random() * 80) + 50;
+              return (
+                <MySkeleton
+                  key={i}
+                  loading
+                  className="h-6"
+                  style={{
+                    width,
+                  }}
+                />
+              );
+            })
+          : tagsAndCategories?.tags.tags.map((item) => {
+              return (
+                <Tag
+                  className="cursor-pointer"
+                  color={(tagMapColor as any)[item.name]}
+                  onClick={() => {
+                    navigate(`/tag/${item.id}`);
+                  }}
+                  key={item.id}
+                >
+                  {item.name}
+                </Tag>
+              );
+            })}
       </div>
     </div>
   );

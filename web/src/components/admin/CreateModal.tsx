@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Form, Input, Modal } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type CreateModalProps = {
   open?: boolean;
@@ -17,6 +17,7 @@ type CreateModalProps = {
 
 export const CreateModal = (props: CreateModalProps) => {
   useLingui();
+  const [loading, setLoading] = useState(false);
   const { open, onClose, onOk, type, operator, initialValues } = props;
   const [form] = Form.useForm();
   useEffect(() => {
@@ -35,8 +36,13 @@ export const CreateModal = (props: CreateModalProps) => {
       centered
       okText={operatorString}
       onOk={async () => {
+        setLoading(true);
         const res = await form.validateFields();
         await onOk?.(operator, res);
+        setLoading(false);
+      }}
+      okButtonProps={{
+        loading,
       }}
     >
       <Form layout="vertical" form={form}>

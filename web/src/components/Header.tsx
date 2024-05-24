@@ -31,7 +31,7 @@ export const Header = () => {
   return (
     <div className="h-14  flex justify-between items-center px-[64px] border-b">
       <div
-        className="cursor-pointer w-[100px] hover:text-blue-500 transition"
+        className="cursor-pointer w-[100px] flex-shrink-0 hover:text-blue-500 transition"
         onClick={() => {
           navigate("/");
         }}
@@ -73,7 +73,9 @@ export const Header = () => {
             >
               <Avatar className="cursor-pointer" src={user.avatar_url} />
             </Dropdown>
-            <Typography.Text>{user.username}</Typography.Text>
+            <Typography.Text className=" whitespace-nowrap">
+              {user.username}
+            </Typography.Text>
           </Space>
         ) : (
           <Tooltip title={<Trans>登陆</Trans>} placement="bottom">

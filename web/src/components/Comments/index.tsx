@@ -78,7 +78,7 @@ function mapCommentTree(data: CommentWithChildren[]) {
 
 export const Comments = (props: CommentsInputProps) => {
   useLingui();
-  const [addComment] = useMutation(COMMENT);
+  const [addComment, { loading }] = useMutation(COMMENT);
   const { data } = useQuery(QUERY_COMMENT, {
     variables: {
       templateId: props.id,
@@ -97,6 +97,7 @@ export const Comments = (props: CommentsInputProps) => {
     <>
       <CommentInput
         showAvatar
+        loading={loading}
         onSubmit={async (value) => {
           try {
             await addComment({

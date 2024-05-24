@@ -3,6 +3,7 @@ import { Tag } from "@/__generated__/graphql";
 import { CreateModal } from "@/components/admin/CreateModal";
 import { useTime } from "@/hooks/useTime";
 import useUrlState from "@ahooksjs/use-url-state";
+import { LoadingOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -194,14 +195,25 @@ export const Component = () => {
               cancelText={t`取消`}
               onConfirm={async () => {
                 try {
+                  message.loading({
+                    content: t`删除中...`,
+                    duration: 0,
+                    key: "delete",
+                  });
                   await deleteTag({
                     variables: {
                       id: record.id!,
                     },
                   });
-                  message.success(t`删除成功`);
+                  message.success({
+                    content: t`删除成功`,
+                    key: "delete",
+                  });
                 } catch (error) {
-                  message.error(t`删除失败`);
+                  message.error({
+                    content: t`删除失败`,
+                    key: "delete",
+                  });
                 }
               }}
             >
@@ -256,6 +268,10 @@ export const Component = () => {
               y: size?.height,
               x: size?.width,
             }}
+            loading={{
+              spinning: loading,
+              indicator: <LoadingOutlined style={{ fontSize: 24 }} />,
+            }}
             rowKey={(record) => record.id!}
             columns={columns}
             virtual
@@ -285,6 +301,11 @@ export const Component = () => {
         onOk={async (operator, values) => {
           try {
             if (operator === "create") {
+              message.loading({
+                content: t`添加中...`,
+                duration: 0,
+                key: "create",
+              });
               await createTag({
                 variables: {
                   input: {
@@ -293,8 +314,16 @@ export const Component = () => {
                   },
                 },
               });
-              message.success(t`添加成功`);
+              message.success({
+                content: t`添加成功`,
+                key: "create",
+              });
             } else if (operator === "update") {
+              message.loading({
+                content: t`更新中...`,
+                duration: 0,
+                key: "update",
+              });
               await updateTag({
                 variables: {
                   id: currentId!,
@@ -304,13 +333,22 @@ export const Component = () => {
                   },
                 },
               });
-              message.success(t`更新成功`);
+              message.success({
+                content: t`更新成功`,
+                key: "update",
+              });
             }
           } catch (error) {
             if (operator === "create") {
-              message.error(t`添加失败`);
+              message.error({
+                content: t`添加失败`,
+                key: "create",
+              });
             } else if (operator === "update") {
-              message.error(t`更新失败`);
+              message.error({
+                content: t`更新失败`,
+                key: "update",
+              });
             }
           } finally {
             setCurrentId(undefined);

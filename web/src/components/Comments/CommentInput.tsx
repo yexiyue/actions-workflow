@@ -8,6 +8,7 @@ const { TextArea } = Input;
 
 type CommentInputProps = {
   value?: string;
+  loading?: boolean;
   onChange?: (value: string) => void;
   onSubmit?: (value: string, userId: number) => void;
   disabled?: boolean;
@@ -48,6 +49,7 @@ export const CommentInput = (props: CommentInputProps) => {
           <Tooltip title={user ? t`添加评论` : t`请先登陆`}>
             <Button
               type="primary"
+              loading={props.loading}
               disabled={
                 !user || props.disabled || !value || value?.trim().length === 0
               }

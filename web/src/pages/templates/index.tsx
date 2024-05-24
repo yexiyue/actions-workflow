@@ -1,6 +1,7 @@
 import { gql } from "@/__generated__";
 import tagMapColor from "@/assets/tagMapColor.json";
 import { Comments } from "@/components/Comments";
+import { MySkeleton } from "@/components/MySkeleton";
 import { useTime } from "@/hooks/useTime";
 import { useUserStore } from "@/stores/useUserStore";
 import {
@@ -11,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import {
   App,
   Avatar,
@@ -33,7 +35,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import styles from "./index.module.less";
-import { useLingui } from "@lingui/react";
 
 const query = gql(`
 query TemplateAndReadme($id:Int!){
@@ -85,25 +86,32 @@ export const Component = () => {
   const { message } = App.useApp();
   const { formatTime, calcRelativeTimeNow } = useTime();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [favorite] = useMutation(ADD_FAVORITE, {
+  const [favorite, { loading: favoriteLoading }] = useMutation(ADD_FAVORITE, {
     variables: {
       id: parseInt(id!),
     },
     refetchQueries: ["TemplateAndReadme"],
   });
 
-  const [disFavorite] = useMutation(DIS_FAVORITE, {
+  const [disFavorite, { loading: disFavoriteLoading }] = useMutation(
+    DIS_FAVORITE,
+    {
+      variables: {
+        id: parseInt(id!),
+      },
+      refetchQueries: ["TemplateAndReadme"],
+    }
+  );
+
+  const { data, loading, error } = useQuery(query, {
     variables: {
       id: parseInt(id!),
     },
-    refetchQueries: ["TemplateAndReadme"],
   });
 
-  const { data } = useQuery(query, {
-    variables: {
-      id: parseInt(id!),
-    },
-  });
+  if (error) {
+    throw error;
+  }
   const config = useMemo(() => {
     if (data) {
       return JSON.parse(JSON.parse(data?.templateWithUser?.config ?? "{}"));
@@ -126,37 +134,39 @@ export const Component = () => {
       label: "README",
       children: (
         <>
-          {data?.templateWithUser.readme ? (
-            <ReactMarkdown
-              className="border p-4 rounded-lg w-full bg-white"
-              components={{
-                code: (props) => {
-                  const { children, className, node, ...rest } = props;
-                  const match = /language-(\w+)/.exec(className || "");
-                  return match ? (
-                    //@ts-ignore
-                    <SyntaxHighlighter
-                      {...rest}
-                      PreTag="div"
-                      children={String(children).replace(/\n$/, "")}
-                      language={match[1]}
-                      style={vscDarkPlus}
-                    />
-                  ) : (
-                    <code {...rest} className={className}>
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            >
-              {data?.templateWithUser.readme}
-            </ReactMarkdown>
-          ) : (
-            <div className="border p-4 rounded-lg w-full bg-white">
-              <Empty description="No README" />
-            </div>
-          )}
+          <MySkeleton loading={loading} className="h-[300px] bg-white">
+            {data?.templateWithUser.readme ? (
+              <ReactMarkdown
+                className="border p-4 rounded-lg w-full bg-white"
+                components={{
+                  code: (props) => {
+                    const { children, className, node, ...rest } = props;
+                    const match = /language-(\w+)/.exec(className || "");
+                    return match ? (
+                      //@ts-ignore
+                      <SyntaxHighlighter
+                        {...rest}
+                        PreTag="div"
+                        children={String(children).replace(/\n$/, "")}
+                        language={match[1]}
+                        style={vscDarkPlus}
+                      />
+                    ) : (
+                      <code {...rest} className={className}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {data?.templateWithUser.readme}
+              </ReactMarkdown>
+            ) : (
+              <div className="border p-4 rounded-lg w-full bg-white">
+                <Empty description="No README" />
+              </div>
+            )}
+          </MySkeleton>
         </>
       ),
     },
@@ -164,17 +174,20 @@ export const Component = () => {
       key: "hbs",
       label: "HBS",
       children: (
-        <div className="border p-4 rounded-lg w-full bg-white">
-          <SyntaxHighlighter
-            PreTag="div"
-            children={data?.templateWithUser.template ?? ""}
-            language="hbs"
-            style={vscDarkPlus}
-          />
-        </div>
+        <MySkeleton loading={loading} className="h-[300px] bg-white">
+          <div className="border p-4 rounded-lg w-full bg-white">
+            <SyntaxHighlighter
+              PreTag="div"
+              children={data?.templateWithUser.template ?? ""}
+              language="hbs"
+              style={vscDarkPlus}
+            />
+          </div>
+        </MySkeleton>
       ),
     },
   ];
+
   return (
     <>
       <div className="w-[80px] h-[300px]  fixed top-[200px] left-6 flex flex-col gap-4 justify-center">
@@ -189,6 +202,7 @@ export const Component = () => {
           <Button
             type={favoriteUsers.has(userId!) ? "primary" : "default"}
             shape="circle"
+            loading={disFavoriteLoading || favoriteLoading}
             icon={<HeartOutlined />}
             onClick={() => {
               if (favoriteUsers.has(userId!)) {
@@ -217,29 +231,40 @@ export const Component = () => {
         }}
       >
         <div className=" bg-white p-6 rounded-xl relative min-w-[400px]">
-          <Typography.Text className="text-xl">
-            {data?.templateWithUser?.name}
-          </Typography.Text>
-          <Typography.Paragraph className="mt-4">
-            {config?.description}
-          </Typography.Paragraph>
-          <Space className="my-2">
-            <Typography.Text type="secondary">
-              {data?.templateWithUser.category.name}
+          <MySkeleton loading={loading} className="w-[100px] h-8">
+            <Typography.Text className="text-xl">
+              {data?.templateWithUser?.name}
             </Typography.Text>
+          </MySkeleton>
+
+          <MySkeleton loading={loading} className="w-[300px] h- mt-2">
+            <Typography.Paragraph className="mt-4">
+              {config?.description}
+            </Typography.Paragraph>
+          </MySkeleton>
+          <Space className="my-2">
+            <MySkeleton loading={loading} className="w-[50px] h-6">
+              <Typography.Text type="secondary">
+                {data?.templateWithUser.category.name}
+              </Typography.Text>
+            </MySkeleton>
             <Divider type="vertical" />
-            {data?.templateWithUser.tags?.map((item) => (
-              <Tag
-                className="cursor-pointer"
-                color={(tagMapColor as any)[item.name]}
-                onClick={() => {
-                  navigate(`/tag/${item.id}`);
-                }}
-                key={item.id}
-              >
-                {item.name}
-              </Tag>
-            ))}
+            {loading
+              ? Array.from(Array(3)).map((_, i) => (
+                  <MySkeleton key={i} loading className="w-[50px] h-6" />
+                ))
+              : data?.templateWithUser.tags?.map((item) => (
+                  <Tag
+                    className="cursor-pointer"
+                    color={(tagMapColor as any)[item.name]}
+                    onClick={() => {
+                      navigate(`/tag/${item.id}`);
+                    }}
+                    key={item.id}
+                  >
+                    {item.name}
+                  </Tag>
+                ))}
           </Space>
           <div className="flex gap-6">
             <Statistic
@@ -266,6 +291,7 @@ export const Component = () => {
               <Button
                 type="primary"
                 danger
+                loading={disFavoriteLoading}
                 icon={<HeartOutlined />}
                 className=" absolute top-[50%] translate-y-[-50%] right-8"
                 onClick={() => {
@@ -279,6 +305,7 @@ export const Component = () => {
             ) : (
               <Button
                 type="primary"
+                loading={favoriteLoading}
                 icon={<HeartOutlined />}
                 className=" absolute top-[50%] translate-y-[-50%] right-8"
                 onClick={() => {
@@ -320,14 +347,18 @@ export const Component = () => {
             <h4>
               <Trans>元数据</Trans>
             </h4>
-            <p className="mt-2">
-              <Trans>更新于：</Trans>
-              {calcRelativeTimeNow(data?.templateWithUser.updateAt ?? "")}
-            </p>
-            <p className="mb-2">
-              <Trans>创建于：</Trans>
-              {formatTime(data?.templateWithUser.createAt ?? "")}
-            </p>
+            <MySkeleton loading={loading}>
+              <p className="mt-2">
+                <Trans>更新于：</Trans>
+                {calcRelativeTimeNow(data?.templateWithUser.updateAt ?? "")}
+              </p>
+            </MySkeleton>
+            <MySkeleton loading={loading} className="mt-2">
+              <p className="mb-2">
+                <Trans>创建于：</Trans>
+                {formatTime(data?.templateWithUser.createAt ?? "")}
+              </p>
+            </MySkeleton>
             <h4>
               <Trans>安装</Trans>
             </h4>
@@ -360,26 +391,35 @@ export const Component = () => {
                 navigate(`/user/${data?.templateWithUser.userId}`);
               }}
             >
-              <Avatar size="small" src={data?.templateWithUser.avatarUrl} />
-              <Typography.Text
-                ellipsis={{
-                  tooltip: data?.templateWithUser.username,
-                }}
+              <MySkeleton
+                loading={loading}
+                className="w-6 h-6 rounded-full mt-0"
               >
-                {data?.templateWithUser.username}
-              </Typography.Text>
+                <Avatar size="small" src={data?.templateWithUser.avatarUrl} />
+              </MySkeleton>
+              <MySkeleton loading={loading} className="w-[80px] mt-0">
+                <Typography.Text
+                  ellipsis={{
+                    tooltip: data?.templateWithUser.username,
+                  }}
+                >
+                  {data?.templateWithUser.username}
+                </Typography.Text>
+              </MySkeleton>
             </div>
             <h4>
               <Trans>存储库</Trans>
             </h4>
-            {data?.templateWithUser.sourceCodeUrl ? (
-              <Space>
-                <GithubOutlined />
-                <a href={data?.templateWithUser.sourceCodeUrl!}>Github</a>
-              </Space>
-            ) : (
-              <Trans>暂无存储库</Trans>
-            )}
+            <MySkeleton loading={loading}>
+              {data?.templateWithUser.sourceCodeUrl ? (
+                <Space>
+                  <GithubOutlined />
+                  <a href={data?.templateWithUser.sourceCodeUrl!}>Github</a>
+                </Space>
+              ) : (
+                <Trans>暂无存储库</Trans>
+              )}
+            </MySkeleton>
           </div>
         </div>
       </div>

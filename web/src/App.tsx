@@ -25,7 +25,7 @@ const httpLink = createHttpLink({
 const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors)
     graphQLErrors.forEach(({ extensions, message }) => {
-      if (extensions.code === 403 || extensions.code === 401) {
+      if (extensions?.code === 403 || extensions?.code === 401) {
         // token 过期自动刷新
         if (message === "token expired") {
           axios({

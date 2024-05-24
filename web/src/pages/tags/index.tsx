@@ -1,4 +1,5 @@
 import { gql } from "@/__generated__";
+import { MySkeleton } from "@/components/MySkeleton";
 import { TemplateCard } from "@/components/TemplateCard";
 import useUrlState from "@ahooksjs/use-url-state";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -53,15 +54,21 @@ export const Component = () => {
   return (
     <>
       <div className=" bg-neutral-50 flex flex-col items-center">
-        <Typography.Title level={4} className="mt-6">
-          {data?.tagByIdWithTemplates.tag.name}
-        </Typography.Title>
-        <Typography.Paragraph className=" max-w-[300px]" type="secondary">
-          {data?.tagByIdWithTemplates.tag.description}
-        </Typography.Paragraph>
-        <Typography.Text type="secondary" className="mb-4">
-          <Trans>{data?.tagByIdWithTemplates.allCount}模版 (仅公开)</Trans>
-        </Typography.Text>
+        <MySkeleton loading={loading} className="w-[100px] h-10 mt-6">
+          <Typography.Title level={4} className="mt-6">
+            {data?.tagByIdWithTemplates.tag.name}
+          </Typography.Title>
+        </MySkeleton>
+        <MySkeleton loading={loading} className="w-[300px] mt-2">
+          <Typography.Paragraph className=" max-w-[300px]" type="secondary">
+            {data?.tagByIdWithTemplates.tag.description}
+          </Typography.Paragraph>
+        </MySkeleton>
+        <MySkeleton loading={loading} className="w-[100px] mt-2 mb-4">
+          <Typography.Text type="secondary" className="mb-4">
+            <Trans>{data?.tagByIdWithTemplates.allCount}模版 (仅公开)</Trans>
+          </Typography.Text>
+        </MySkeleton>
       </div>
       <div className="flex justify-center my-4">
         <Search

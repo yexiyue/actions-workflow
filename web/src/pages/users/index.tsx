@@ -1,4 +1,5 @@
 import { gql } from "@/__generated__";
+import { MySkeleton } from "@/components/MySkeleton";
 import { TemplateCard } from "@/components/TemplateCard";
 import { useTime } from "@/hooks/useTime";
 import useUrlState from "@ahooksjs/use-url-state";
@@ -55,18 +56,26 @@ export const Component = () => {
   return (
     <>
       <div className="flex gap-2 items-center flex-col bg-neutral-50 p-4">
-        <Avatar size="large" src={data?.userById?.avatarUrl} />
-        <Typography.Text>
-          <Trans>用户名称: {data?.userById?.username}</Trans>
-        </Typography.Text>
-        <Typography.Text type="secondary">
-          <Trans>注册时间: {formatTime(data?.userById?.createAt)}</Trans>
-        </Typography.Text>
-        <Typography.Text type="secondary">
-          <Trans>
-            模版数量: {data?.templatesByUserId.allCount} (仅公开数量)
-          </Trans>
-        </Typography.Text>
+        <MySkeleton className="w-10 h-10 rounded-full" loading={loading}>
+          <Avatar size="large" src={data?.userById?.avatarUrl} />
+        </MySkeleton>
+        <MySkeleton className="w-[140px]" loading={loading}>
+          <Typography.Text>
+            <Trans>用户名称: {data?.userById?.username}</Trans>
+          </Typography.Text>
+        </MySkeleton>
+        <MySkeleton className="w-[230px]" loading={loading}>
+          <Typography.Text type="secondary">
+            <Trans>注册时间: {formatTime(data?.userById?.createAt)}</Trans>
+          </Typography.Text>
+        </MySkeleton>
+        <MySkeleton className="w-[150px]" loading={loading}>
+          <Typography.Text type="secondary">
+            <Trans>
+              模版数量: {data?.templatesByUserId.allCount} (仅公开数量)
+            </Trans>
+          </Typography.Text>
+        </MySkeleton>
       </div>
       <div className="flex justify-center  my-4">
         <Search

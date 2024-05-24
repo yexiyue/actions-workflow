@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { Form, Input, Modal, Select } from "antd";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const queryTemplate = gql(`
   query GetTemplateInfo($id:Int!){
@@ -34,9 +34,14 @@ type FormValues = {
 export const UpdateModal = (props: UpdateModalProps) => {
   const { id, open, onClose, onOk } = props;
   if (!id) return null;
+
+  const [loading, setLoading] = useState(false);
   useLingui();
-  const { data: tagsAndCategories } = useQuery(TAGS_CATEGORY);
-  const { data } = useQuery(queryTemplate, { variables: { id } });
+  const { data: tagsAndCategories, loading: tagsAndCategoriesLoading } =
+    useQuery(TAGS_CATEGORY);
+  const { data, loading: dataLoading } = useQuery(queryTemplate, {
+    variables: { id },
+  });
   const [form] = Form.useForm<FormValues>();
 
   useEffect(() => {
@@ -78,8 +83,13 @@ export const UpdateModal = (props: UpdateModalProps) => {
       title={t`修改模版`}
       onCancel={() => onClose()}
       onOk={async () => {
+        setLoading(true);
         const res = await form.validateFields();
         await onOk?.(res);
+        setLoading(false);
+      }}
+      okButtonProps={{
+        loading,
       }}
       okText={t`更新`}
       cancelText={t`取消`}
@@ -95,13 +105,18 @@ export const UpdateModal = (props: UpdateModalProps) => {
             },
           ]}
         >
-          <Select options={categoriesOptions} placeholder={t`请选择分类`} />
+          <Select
+            options={categoriesOptions}
+            loading={tagsAndCategoriesLoading || dataLoading}
+            placeholder={t`请选择分类`}
+          />
         </Form.Item>
         <Form.Item label={t`标签`} name="tagIds">
           <Select
             options={tagsOptions}
             placeholder={t`请选择标签`}
             allowClear
+            loading={tagsAndCategoriesLoading || dataLoading}
             mode="multiple"
             maxCount={3}
           />

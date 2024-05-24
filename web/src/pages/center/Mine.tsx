@@ -1,8 +1,10 @@
 import { gql } from "@/__generated__/gql";
 import { Template } from "@/__generated__/graphql";
+import { MySwitch } from "@/components/mine/MySwitch";
 import { UpdateModal } from "@/components/mine/UpdateModal";
 import { useTime } from "@/hooks/useTime";
 import useUrlState from "@ahooksjs/use-url-state";
+import { LoadingOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -13,7 +15,6 @@ import {
   Pagination,
   Popconfirm,
   Space,
-  Switch,
   Table,
   Typography,
 } from "antd";
@@ -169,11 +170,17 @@ export const Component = () => {
       width: 80,
       render: (isPublic: boolean, record) => {
         return (
-          <Switch
-            size="small"
+          <MySwitch
             value={isPublic}
             onChange={async (e) => {
               try {
+                message.open({
+                  key: "public",
+                  type: "loading",
+                  duration: 0,
+                  content: t`更新中...`,
+                });
+
                 await updateTemplate({
                   variables: {
                     id: record.id!,
@@ -182,9 +189,17 @@ export const Component = () => {
                     },
                   },
                 });
-                message.success(t`更新成功`);
+                message.open({
+                  key: "public",
+                  type: "success",
+                  content: t`更新成功`,
+                });
               } catch (error) {
-                message.error(t`更新失败`);
+                message.open({
+                  key: "public",
+                  type: "error",
+                  content: t`更新失败`,
+                });
               }
             }}
           />
@@ -212,14 +227,28 @@ export const Component = () => {
               cancelText={t`取消`}
               onConfirm={async () => {
                 try {
+                  message.open({
+                    key: "delete",
+                    type: "loading",
+                    duration: 0,
+                    content: t`删除中...`,
+                  });
                   await deleteTemplate({
                     variables: {
                       id: record.id!,
                     },
                   });
-                  message.success(t`删除成功`);
+                  message.open({
+                    key: "delete",
+                    type: "success",
+                    content: t`删除成功`,
+                  });
                 } catch (error) {
-                  message.error(t`删除失败`);
+                  message.open({
+                    key: "delete",
+                    type: "error",
+                    content: t`删除失败`,
+                  });
                 }
               }}
             >
@@ -261,6 +290,10 @@ export const Component = () => {
               y: size?.height,
               x: size?.width,
             }}
+            loading={{
+              spinning: loading,
+              indicator: <LoadingOutlined style={{ fontSize: 24 }} />,
+            }}
             rowKey={(record) => record.id!}
             columns={columns}
             virtual
@@ -288,6 +321,12 @@ export const Component = () => {
         }}
         onOk={async (values) => {
           try {
+            message.open({
+              key: "update",
+              type: "loading",
+              duration: 0,
+              content: t`更新中...`,
+            });
             await updateTemplate({
               variables: {
                 id: currentId!,
@@ -305,9 +344,17 @@ export const Component = () => {
                 },
               },
             });
-            message.success(t`更新成功`);
+            message.open({
+              key: "update",
+              type: "success",
+              content: t`更新成功`,
+            });
           } catch (error) {
-            message.error(t`更新失败`);
+            message.open({
+              key: "update",
+              type: "error",
+              content: t`更新失败`,
+            });
           } finally {
             setCurrentId(undefined);
             setOpen(false);

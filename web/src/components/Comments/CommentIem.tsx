@@ -1,19 +1,15 @@
+import { gql } from "@/__generated__";
 import { Comment, User } from "@/__generated__/graphql";
 import { useTime } from "@/hooks/useTime";
-import {
-  DeleteOutlined,
-  DislikeOutlined,
-  LikeOutlined,
-} from "@ant-design/icons";
+import { useUserStore } from "@/stores/useUserStore";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useMutation } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { App, Avatar, Button, Typography } from "antd";
 import { PropsWithChildren, useState } from "react";
-import { CommentInput } from "./CommentInput";
-import { useLingui } from "@lingui/react";
-import { useMutation } from "@apollo/client";
 import { COMMENT } from ".";
-import { useUserStore } from "@/stores/useUserStore";
-import { gql } from "@/__generated__";
+import { CommentInput } from "./CommentInput";
 
 type CommentProps = {
   user: Omit<User, "__typename">;
@@ -33,7 +29,7 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
   const { message } = App.useApp();
   useLingui();
   const [isReply, setIsReply] = useState(false);
-  const [addComment] = useMutation(COMMENT);
+  const [addComment, { loading }] = useMutation(COMMENT);
 
   return (
     <div className="flex gap-4 my-2">
@@ -46,7 +42,7 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
             {calcRelativeTimeNow(comment.createAt)}
           </Typography.Text>
           <div>
-            <Button
+            {/* <Button
               type="text"
               size="small"
               icon={
@@ -67,7 +63,7 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
                   }}
                 />
               }
-            ></Button>
+            ></Button> */}
             {my?.id === user.id && (
               <Button
                 type="text"
@@ -82,15 +78,26 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
                 }
                 onClick={async () => {
                   try {
+                    message.loading({
+                      content: t`删除中...`,
+                      duration: 0,
+                      key: "delete",
+                    });
                     await deleteComment({
                       variables: {
                         id: comment.id,
                       },
                       refetchQueries: ["TemplateAndReadme", "QueryComments"],
                     });
-                    message.success(t`删除成功`);
+                    message.success({
+                      content: t`删除成功`,
+                      key: "delete",
+                    });
                   } catch (error) {
-                    message.error(t`删除成功`);
+                    message.error({
+                      content: t`删除失败`,
+                      key: "delete",
+                    });
                   }
                 }}
               ></Button>
@@ -98,8 +105,9 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
             <Button
               type="link"
               size="small"
+              loading={loading}
               onClick={() => {
-                setIsReply((pre) => !pre);
+                setIsReply(!isReply);
               }}
             >
               <Trans>回复</Trans>
@@ -109,9 +117,15 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
         {isReply && (
           <CommentInput
             isReply
+            loading={loading}
             placeholder={t`回复${user.username}`}
             onSubmit={async (value) => {
               try {
+                message.loading({
+                  content: t`回复中...`,
+                  duration: 0,
+                  key: "reply",
+                });
                 await addComment({
                   variables: {
                     input: {
@@ -122,9 +136,15 @@ export const CommentIem = ({ user, comment, children }: CommentProps) => {
                   },
                   refetchQueries: ["TemplateAndReadme", "QueryComments"],
                 });
-                message.success(t`回复成功`);
+                message.success({
+                  content: t`回复成功`,
+                  key: "reply",
+                });
               } catch (err) {
-                message.error(t`回复失败`);
+                message.error({
+                  content: t`回复失败`,
+                  key: "reply",
+                });
               } finally {
                 setIsReply(false);
               }

@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { Avatar, Divider, List, Space, Tag, Typography } from "antd";
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
+import { MySkeleton } from "./MySkeleton";
 
 const query = gql(`
   query Template($id:Int!){
@@ -36,7 +37,7 @@ type TemplateCardProps = {
   id: number;
 };
 export const TemplateCard = ({ id }: TemplateCardProps) => {
-  const { data } = useQuery(query, { variables: { id } });
+  const { data, loading } = useQuery(query, { variables: { id } });
 
   const config = useMemo(() => {
     if (data) {
@@ -67,35 +68,49 @@ export const TemplateCard = ({ id }: TemplateCardProps) => {
     >
       <List.Item.Meta
         avatar={
-          <Avatar
-            src={data?.templateWithUser.avatarUrl}
-            onClick={(e) => {
-              e?.stopPropagation();
-              navigate(`/user/${data?.templateWithUser.userId}`);
-            }}
-          />
+          <MySkeleton loading={loading} className="w-8 h-8 rounded-full">
+            <Avatar
+              src={data?.templateWithUser.avatarUrl}
+              onClick={(e) => {
+                e?.stopPropagation();
+                navigate(`/user/${data?.templateWithUser.userId}`);
+              }}
+            />
+          </MySkeleton>
         }
-        title={data?.templateWithUser?.name}
+        title={
+          <MySkeleton loading={loading} className="w-[100px]">
+            {data?.templateWithUser?.name}
+          </MySkeleton>
+        }
         description={
           <Space>
-            {data?.templateWithUser.category?.name}
+            <MySkeleton loading={loading} className="w-[50px]">
+              {data?.templateWithUser.category?.name}
+            </MySkeleton>
             <Divider type="vertical" />
-            {data?.templateWithUser.tags?.map((item) => (
-              <Tag
-                color={(tagMapColor as any)[item.name]}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/tag/${item.id}`);
-                }}
-                key={item.id}
-              >
-                {item.name}
-              </Tag>
-            ))}
+            {loading
+              ? Array.from(Array(3)).map((_, i) => (
+                  <MySkeleton key={i} loading className="w-[50px] h-6" />
+                ))
+              : data?.templateWithUser.tags?.map((item) => (
+                  <Tag
+                    color={(tagMapColor as any)[item.name]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/tag/${item.id}`);
+                    }}
+                    key={item.id}
+                  >
+                    {item.name}
+                  </Tag>
+                ))}
           </Space>
         }
       />
-      {config?.description}
+      <MySkeleton loading={loading}>
+        {config?.description}
+      </MySkeleton>
     </List.Item>
   );
 };

@@ -1,8 +1,8 @@
 name: web
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - "master"
   workflow_dispatch:
 jobs:
   deploy:
