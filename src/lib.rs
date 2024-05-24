@@ -27,7 +27,7 @@ pub async fn build_root_router(coon: DbConn, secret_store: SecretStore) -> Resul
     let auth = OAuth::new(
         &client_id,
         &client_secret,
-        "https://yexiyue.github.io/actions-workflows/auth",
+        "https://yexiyue.github.io/actions-workflow/auth",
     )?;
     let redis_url = secret_store.get("REDIS_URL").unwrap();
     let client = redis::Client::open(redis_url).unwrap();
