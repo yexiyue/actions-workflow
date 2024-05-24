@@ -414,7 +414,12 @@ export const Component = () => {
               {data?.templateWithUser.sourceCodeUrl ? (
                 <Space>
                   <GithubOutlined />
-                  <a href={data?.templateWithUser.sourceCodeUrl!}>Github</a>
+                  <Typography.Link
+                    href={data?.templateWithUser.sourceCodeUrl!}
+                    target="_blank"
+                  >
+                    Github
+                  </Typography.Link>
                 </Space>
               ) : (
                 <Trans>暂无存储库</Trans>

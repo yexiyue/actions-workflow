@@ -17,11 +17,11 @@ msgstr ""
 msgid "{0}模版 (仅公开)"
 msgstr "{0}模版 (仅公开)"
 
-#: src/components/admin/CreateModal.tsx:50
+#: src/components/admin/CreateModal.tsx:51
 msgid "{type}名称"
 msgstr "{type}名称"
 
-#: src/components/admin/CreateModal.tsx:56
+#: src/components/admin/CreateModal.tsx:57
 msgid "{type}描述"
 msgstr "{type}描述"
 
@@ -437,12 +437,12 @@ msgstr "请先登录"
 msgid "请先登陆"
 msgstr "请先登陆"
 
-#: src/components/admin/CreateModal.tsx:52
-#: src/components/admin/CreateModal.tsx:54
+#: src/components/admin/CreateModal.tsx:53
+#: src/components/admin/CreateModal.tsx:55
 msgid "请输入{type}名称"
 msgstr "请输入{type}名称"
 
-#: src/components/admin/CreateModal.tsx:66
+#: src/components/admin/CreateModal.tsx:67
 msgid "请输入{type}描述"
 msgstr "请输入{type}描述"
 

@@ -154,7 +154,7 @@ export const Component = () => {
       width: 150,
       render: (sourceCodeUrl) => {
         return sourceCodeUrl ? (
-          <Typography.Link href={sourceCodeUrl} ellipsis>
+          <Typography.Link href={sourceCodeUrl} target="_blank" ellipsis>
             {sourceCodeUrl}
           </Typography.Link>
         ) : (

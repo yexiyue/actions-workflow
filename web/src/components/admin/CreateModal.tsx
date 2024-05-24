@@ -39,6 +39,7 @@ export const CreateModal = (props: CreateModalProps) => {
         setLoading(true);
         const res = await form.validateFields();
         await onOk?.(operator, res);
+        form.resetFields();
         setLoading(false);
       }}
       okButtonProps={{
