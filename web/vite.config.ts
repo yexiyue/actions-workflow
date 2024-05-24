@@ -15,7 +15,7 @@ export default defineConfig({
       "@": "/src",
     },
   },
-  base: "/actions-workflows",
+  base: "/actions-workflow",
   // server: {
   //   proxy: {
   //     "/api": {
