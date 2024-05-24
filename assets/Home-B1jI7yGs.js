@@ -1,4 +1,4 @@
-import{a3 as w,ab as N,ap as b,a2 as I,r as S,a7 as d,a4 as e,aj as T,ah as k}from"./index-Bf3tMyn6.js";import{g as x,b as u,I as C}from"./index-BiSxIIt5.js";import{M as h,T as A,t as $}from"./MySkeleton-tBAIsiYB.js";import{L,T as M}from"./TemplateCard-DNFL9l7g.js";import{u as E}from"./index-DFwDVimj.js";import"./index-RQEc1OdY.js";const{Search:P}=C,_=x(`
+import{a3 as w,ab as N,ap as b,a2 as I,r as S,a7 as d,a4 as e,aj as T,ah as k}from"./index-BPVxhfy4.js";import{g as x,b as u,I as C}from"./index-DuPDKWxn.js";import{M as h,T as A,t as $}from"./MySkeleton-DPDOqslu.js";import{L,T as M}from"./TemplateCard-B5PV8jwu.js";import{u as E}from"./index-BFoBfxDw.js";import"./index-DgJ2S1Rq.js";const{Search:P}=C,_=x(`
   query Dates($categoryId: Int, $pagination:Pagination,$search:String) {
     templatesWithPagination(categoryId: $categoryId, pagination: $pagination,search: $search) {
       templates{
