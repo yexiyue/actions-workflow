@@ -1,4 +1,4 @@
-import{a3 as $,ab as B,a2 as E,r as d,a7 as a,a4 as t,ac as c,a6 as P,aa as m,a9 as L,ah as Q}from"./index-BwYd4JdA.js";import{g as p,b as R,I as G}from"./index-DfjT2pQX.js";import{C as q}from"./CreateModal-B2LSBWb8.js";import{u as O}from"./useTime-BqjdGdn3.js";import{u as z,P as M}from"./index-rPvqYH0Z.js";import{u as U,P as F,a as H}from"./index-BBeq0XHt.js";import{u as x}from"./index-DYNocsjU.js";import"./index-Bgn2j0mL.js";const{Search:J}=G,K=p(`
+import{a3 as $,ab as B,a2 as E,r as d,a7 as a,a4 as t,ac as c,a6 as P,aa as m,a9 as L,ah as Q}from"./index-2Og1nv0n.js";import{g as p,b as R,I as G}from"./index-BDRk5EhP.js";import{C as q}from"./CreateModal-zOj-S9NC.js";import{u as O}from"./useTime-BW_M2mMm.js";import{u as z,P as M}from"./index-BQXgRjwF.js";import{u as U,P as F,a as H}from"./index-BqZjKmYw.js";import{u as x}from"./index-CYqDg7_g.js";import"./index-BH574STE.js";const{Search:J}=G,K=p(`
   query Tags($pagination:Pagination,$search:String){
     tags(pagination:$pagination,search:$search){
       total
