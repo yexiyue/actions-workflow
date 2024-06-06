@@ -2,7 +2,7 @@ use crate::{
     entity::{category, favorites, tag, template::Model, user},
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::RedisKeys,
+    redis_keys::{gen_key, RedisKeys},
     service::{
         favorites::FavoritesService, template::TemplateService, template_tag::TemplateTagService,
         Pagination,
@@ -157,7 +157,7 @@ impl TemplateQuery {
         let coon = ctx.data::<MultiplexedConnection>()?;
         let mut redis = coon.clone();
         let res = redis
-            .hget(RedisKeys::TemplateDownloads, id)
+            .get(gen_key(RedisKeys::TemplateDownloads, id))
             .await
             .unwrap_or(0);
         Ok(res)

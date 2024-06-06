@@ -2,7 +2,7 @@ use crate::{
     entity::template::Model,
     graphql::AuthGuard,
     jwt::Claims,
-    redis_keys::RedisKeys,
+    redis_keys::{gen_key, RedisKeys},
     service::{
         template::{TemplateCreateInput, TemplateService, TemplateUpdateInput},
         template_tag::{TemplateTagInput, TemplateTagService},
@@ -45,7 +45,9 @@ impl TemplateMutation {
     async fn increase_download_count(&self, ctx: &Context<'_>, id: i32) -> Result<&'static str> {
         let redis = ctx.data::<MultiplexedConnection>()?;
         let mut redis = redis.clone();
-        redis.hincr(RedisKeys::TemplateDownloads, id, 1).await?;
+        redis
+            .incr(gen_key(RedisKeys::TemplateDownloads, id), 1)
+            .await?;
         Ok("ok")
     }
 
